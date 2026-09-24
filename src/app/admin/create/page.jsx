@@ -128,7 +128,7 @@ export default function CreateProjectForm() {
         fd.append("screenshots[]", file);
       });
 
-      const res = await fetch(`${BASE_URL}/api/projects/create`, {
+      const res = await fetch(`${BASE_URL}/api/projects`, {
         method: "POST",
         body: fd
         // DO NOT set Content-Type header — browser sets multipart boundary

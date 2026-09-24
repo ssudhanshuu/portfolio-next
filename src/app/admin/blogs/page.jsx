@@ -24,7 +24,7 @@ const ImageWithFallback = ({ src, alt, className }) => (
   <img
     src={
       src
-        ? `http://localhost:3000${src}`
+        ? src
         : "https://dummyimage.com/300x200/cccccc/000000.jpg&text=No+Image" 
     }
     alt={alt}

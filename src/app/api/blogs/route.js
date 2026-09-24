@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import dbConnect from "@/lib/db";
 import Blog from "@/models/Blog";
-import fs from "fs/promises";
-import path from "path";
+import { uploadToCloudinary } from "@/lib/cloudinary";
 
 export async function GET() {
   try {
@@ -42,33 +41,25 @@ export async function POST(req) {
       ? technologies.split(",").map((t) => t.trim()) 
       : [];
 
-    let mainImagePath = null;
+    // Upload main image to Cloudinary
+    let mainImageUrl = null;
     const imageFile = formData.get("image");
     
-    // Process image file if present
     if (imageFile && imageFile.name) {
       const buffer = Buffer.from(await imageFile.arrayBuffer());
-      const filename = `${Date.now()}-${imageFile.name}`;
-      const uploadDir = path.join(process.cwd(), "public/uploads");
-      
-      // Ensure upload dir exists
-      await fs.mkdir(uploadDir, { recursive: true });
-      await fs.writeFile(path.join(uploadDir, filename), buffer);
-      mainImagePath = `/uploads/${filename}`;
+      const result = await uploadToCloudinary(buffer, "portfolio/blogs");
+      mainImageUrl = result.secure_url;
     }
 
-    let screenshotPaths = [];
+    // Upload screenshots to Cloudinary
+    let screenshotUrls = [];
     const screenshotFiles = formData.getAll("screenshots");
     if (screenshotFiles && screenshotFiles.length > 0) {
-      const uploadDir = path.join(process.cwd(), "public/uploads");
-      await fs.mkdir(uploadDir, { recursive: true });
-
       for (const file of screenshotFiles) {
         if (file && file.name) {
           const buffer = Buffer.from(await file.arrayBuffer());
-          const filename = `${Date.now()}-${file.name}`;
-          await fs.writeFile(path.join(uploadDir, filename), buffer);
-          screenshotPaths.push(`/uploads/${filename}`);
+          const result = await uploadToCloudinary(buffer, "portfolio/blogs/screenshots");
+          screenshotUrls.push(result.secure_url);
         }
       }
     }
@@ -84,8 +75,8 @@ export async function POST(req) {
       status,
       liveDemo,
       github,
-      image: mainImagePath,
-      screenshots: screenshotPaths,
+      image: mainImageUrl,
+      screenshots: screenshotUrls,
     });
 
     return NextResponse.json({ success: true, message: "Blog created successfully!", data: blog }, { status: 201 });
