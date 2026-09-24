@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useContext, useEffect, useState } from "react";
-import AdminSidebar from "./AdminSidebar";
+
 import { Plus } from "lucide-react";
-import { AdminContext } from "../../context/Admincontext";
-import { useNavigate } from "react-router-dom";
+import { AdminContext } from "@/context/Admincontext";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import {
   BarChart,
@@ -20,14 +20,14 @@ import {
 function AdminSkill() {
   const { skills, fetchSkills } = useContext(AdminContext);
   const [selectedCategory, setSelectedCategory] = useState("");
-  const navigate = useNavigate();
+  const router = useRouter();
 
   useEffect(() => {
     fetchSkills();
   }, []);
 
   const handleAddSkill = () => {
-    navigate("/admin/create/skill");
+    router.push("/admin/create/skill");
   };
 
   // Extract all category names
@@ -49,35 +49,32 @@ function AdminSkill() {
   // Filter data to display based on selected category
   const displayedSkills = selectedCategory
     ? selectedCategoryData?.skills.map((s) => ({
-        ...s,
-        category: selectedCategoryData.category,
-      })) || []
+      ...s,
+      category: selectedCategoryData.category,
+    })) || []
     : allSkills;
 
   return (
-    <div className="flex md:flex-row flex-col">
-      <AdminSidebar />
-      <div className="flex-1 p-4 ml-12">
+    <>
         {/* Header */}
-        <div className="text-xl flex font-semibold border-b-2 pl-2 mb-4 justify-between">
-          Skills
+        <div className="flex items-center justify-between mb-8 pb-4 border-b border-[#2b2b40]">
+          <h1 className="text-2xl font-bold text-white">Skills Management</h1>
           <button
-            className="mr-4 cursor-pointer flex items-center gap-2"
+            className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition"
             onClick={handleAddSkill}
           >
-            Add Skill <Plus size={18} />
+            <Plus size={18} /> Add Skill
           </button>
         </div>
 
         {/* Category Buttons */}
-        <div className="flex flex-wrap gap-3 mb-6">
+        <div className="flex flex-wrap gap-3 mb-8">
           <button
             onClick={() => setSelectedCategory("")}
-            className={`px-5 py-2 rounded-lg font-medium transition-all ${
-              selectedCategory === ""
-                ? "bg-blue-600 text-white shadow"
-                : "bg-white dark:bg-gray-800 border hover:bg-gray-100 dark:hover:bg-gray-700"
-            }`}
+            className={`px-5 py-2 rounded-lg font-medium text-sm transition-all border ${selectedCategory === ""
+                ? "bg-indigo-600/20 text-indigo-400 border-indigo-500/50"
+                : "bg-[#1e1e2d] text-[#92929f] border-[#2b2b40] hover:bg-[#2b2b40] hover:text-white"
+              }`}
           >
             All
           </button>
@@ -85,11 +82,10 @@ function AdminSkill() {
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-5 py-2 rounded-lg font-medium transition-all ${
-                selectedCategory === cat
-                  ? "bg-blue-600 text-white shadow"
-                  : "bg-white dark:bg-gray-800 border hover:bg-gray-100 dark:hover:bg-gray-700"
-              }`}
+              className={`px-5 py-2 rounded-lg font-medium text-sm transition-all border ${selectedCategory === cat
+                  ? "bg-indigo-600/20 text-indigo-400 border-indigo-500/50"
+                  : "bg-[#1e1e2d] text-[#92929f] border-[#2b2b40] hover:bg-[#2b2b40] hover:text-white"
+                }`}
             >
               {cat}
             </button>
@@ -108,36 +104,39 @@ function AdminSkill() {
             displayedSkills.map((skill, index) => (
               <div
                 key={index}
-                className="p-6 bg-white dark:bg-gray-800 rounded-xl shadow hover:shadow-lg transition"
+                className="p-6 bg-[#1e1e2d] border border-[#2b2b40] rounded-xl transition"
               >
-                <div className="flex justify-between items-center mb-3">
-                  <h4 className="text-lg font-semibold">{skill.name}</h4>
-                  <span className="text-sm bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded">
+                <div className="flex justify-between items-center mb-4">
+                  <h4 className="text-lg font-bold text-white">{skill.name}</h4>
+                  <span className="text-xs bg-[#2b2b40] text-[#92929f] px-2.5 py-1 rounded-md font-semibold tracking-wider">
                     {skill.year}y
                   </span>
                 </div>
-                <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mb-2">
+                <div className="w-full bg-[#151521] border border-[#2b2b40] rounded-full h-2.5 mb-3">
                   <div
-                    className="bg-blue-500 h-2 rounded-full"
+                    className="bg-indigo-500 h-2.5 rounded-full"
                     style={{ width: `${skill.proficiency}%` }}
                   ></div>
                 </div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Proficiency: {skill.proficiency}%
+                <p className="text-sm text-[#92929f] flex justify-between">
+                  <span>Proficiency</span>
+                  <span className="text-white font-medium">{skill.proficiency}%</span>
                 </p>
-                <p className="text-xs text-gray-400 mt-1 italic">
-                  Category: {skill.category}
+                <p className="text-xs text-indigo-400/80 mt-2 uppercase tracking-wider font-semibold">
+                  {skill.category}
                 </p>
               </div>
             ))
           ) : (
-            <p className="text-gray-500 dark:text-gray-400">No skills found.</p>
+            <div className="col-span-full text-center py-20 bg-[#1e1e2d] rounded-xl border border-[#2b2b40]">
+              <p className="text-sm text-[#92929f]">No skills found.</p>
+            </div>
           )}
         </motion.div>
 
         {/* Chart Section */}
-        <div className="mt-16 bg-white dark:bg-gray-800 p-6 rounded-xl shadow">
-          <h3 className="text-xl font-semibold mb-6 text-center">
+        <div className="mt-12 bg-[#1e1e2d] border border-[#2b2b40] p-6 rounded-xl">
+          <h3 className="text-lg font-bold text-white mb-6">
             {selectedCategory ? selectedCategory : "All"} Skills Chart
           </h3>
           <ResponsiveContainer width="100%" height={350}>
@@ -150,12 +149,11 @@ function AdminSkill() {
               <YAxis />
               <Tooltip />
               <Legend />
-              <Bar dataKey="proficiency" fill="#3b82f6" name="Proficiency (%)" />
+              <Bar dataKey="proficiency" fill="#6366f1" radius={[4, 4, 0, 0]} name="Proficiency (%)" />
             </BarChart>
           </ResponsiveContainer>
         </div>
-      </div>
-    </div>
+    </>
   );
 }
 

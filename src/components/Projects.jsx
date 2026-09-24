@@ -1,44 +1,36 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ExternalLink } from "lucide-react";
 import { FaGithub } from "react-icons/fa";
 import Tilt from "react-parallax-tilt";
 
 export default function Projects() {
   const [filter, setFilter] = useState("");
+  const [projects, setProjects] = useState([]);
 
-  const projects = [
-    {
-      id: 1,
-      name: "Movie Booking App",
-      description:
-        "Full stack movie booking application with Clerk auth, seat selection, and real-time availability.",
-      status: "Active",
-      category: "Web",
-      tech: ["React", "Node.js", "MongoDB", "Clerk"],
-    },
-    {
-      id: 2,
-      name: "E-commerce Platform",
-      description:
-        "Modern e-commerce app with cart, checkout flow, Stripe payments, and admin dashboard.",
-      status: "Completed",
-      category: "Web",
-      tech: ["React", "Express", "MongoDB", "Stripe"],
-    },
-    {
-      id: 3,
-      name: "Mobile Banking",
-      description:
-        "Banking app with secure authentication, fund transfers, and transaction history.",
-      status: "In Progress",
-      category: "Mobile",
-      tech: ["React Native", "Node.js", "PostgreSQL"],
-    },
-  ];
+  useEffect(() => {
+    fetch("/api/public/projects")
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setProjects(data.map((p) => ({
+            id: p._id,
+            name: p.name,
+            description: p.description || p.tagline,
+            status: p.status === "active" ? "Active" : p.status === "completed" ? "Completed" : "In Progress",
+            category: p.category,
+            tech: p.technologies || [],
+            liveDemo: p.liveDemo,
+            github: p.github,
+            image: p.image,
+          })));
+        }
+      })
+      .catch((err) => console.error("Error fetching projects:", err));
+  }, []);
 
-  const categories = ["All", "Web", "Mobile"];
+  const categories = ["All", ...new Set(projects.map((p) => p.category))];
 
   const filtered = projects.filter((p) =>
     filter && filter !== "All" ? p.category === filter : true

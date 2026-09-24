@@ -2,8 +2,8 @@
 
 import React, { useState } from "react";
 import axios from "axios";
-import AdminSidebar from "./AdminSidebar";
-import { useNavigate } from "react-router-dom";
+
+import { useRouter } from "next/navigation";
 
 const AdminCreateSkills = () => {
   const [formData, setFormData] = useState({
@@ -14,7 +14,7 @@ const AdminCreateSkills = () => {
   });
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
-  const navigator = useNavigate();
+  const router = useRouter();
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -23,7 +23,7 @@ const AdminCreateSkills = () => {
     e.preventDefault();
     setMessage("");
     setError("");
-    navigator("/admin/skills");
+    router.push("/admin/skills");
 
     try {
       const res = await axios.post("http://localhost:3000/api/skills/create", formData);
@@ -41,50 +41,51 @@ const AdminCreateSkills = () => {
   };
 
   return (
-    <div className="flex">
-      <AdminSidebar />
-      <div className="flex-1 ml-15 mt-5">
-        <h2 className="text-2xl border-b-2 font-semibold mb-6 mr-10">Add Skill</h2>
+    <>
+      <div className="flex items-center justify-between mb-8 pb-4 border-b border-[#22222f]">
+        <h1 className="text-2xl font-bold text-white">Add Skill</h1>
+      </div>
 
+      <div className="max-w-md">
         <form
           onSubmit={handleSubmit}
-          className="bg-white shadow-md rounded-lg p-6 max-w-md space-y-4"
+          className="bg-[#13131a] border border-purple-500/40 rounded-2xl p-6 space-y-5 shadow-[0_0_20px_rgba(124,58,237,0.15)]"
         >
           {/* Category */}
           <div>
-            <label className="block text-gray-700 mb-1">Category</label>
+            <label className="block text-sm font-semibold text-[#a1a1aa] mb-1.5">Category</label>
             <select
               name="category"
               value={formData.category}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg p-2"
+              className="w-full bg-[#0a0a0f] border border-[#22222f] rounded-xl p-3 text-white outline-none focus:border-pink-500 transition"
               required
             >
               <option value="">Select Category</option>
-              <option value="frontend">Frontend</option>
-              <option value="backend">Backend</option>
-              <option value="database">Database</option>
-              <option value="others">Others</option>
+              <option value="Frontend">Frontend</option>
+              <option value="Backend">Backend</option>
+              <option value="Database">Database</option>
+              <option value="Others">Others</option>
             </select>
           </div>
 
           {/* Skill Name */}
           <div>
-            <label className="block text-gray-700 mb-1">Skill Name</label>
+            <label className="block text-sm font-semibold text-[#a1a1aa] mb-1.5">Skill Name</label>
             <input
               type="text"
               name="name"
               value={formData.name}
               onChange={handleChange}
               placeholder="e.g. React, Node.js, MongoDB"
-              className="w-full border border-gray-300 rounded-lg p-2"
+              className="w-full bg-[#0a0a0f] border border-[#22222f] rounded-xl p-3 text-white placeholder-[#71717a] outline-none focus:border-pink-500 transition"
               required
             />
           </div>
 
           {/* Proficiency */}
           <div>
-            <label className="block text-gray-700 mb-1">Proficiency (%)</label>
+            <label className="block text-sm font-semibold text-[#a1a1aa] mb-1.5">Proficiency (%)</label>
             <input
               type="number"
               name="proficiency"
@@ -93,21 +94,21 @@ const AdminCreateSkills = () => {
               placeholder="e.g. 80"
               min="0"
               max="100"
-              className="w-full border border-gray-300 rounded-lg p-2"
+              className="w-full bg-[#0a0a0f] border border-[#22222f] rounded-xl p-3 text-white placeholder-[#71717a] outline-none focus:border-pink-500 transition"
               required
             />
           </div>
 
           {/* Year */}
           <div>
-            <label className="block text-gray-700 mb-1">Year</label>
+            <label className="block text-sm font-semibold text-[#a1a1aa] mb-1.5">Year</label>
             <input
               type="number"
               name="year"
               value={formData.year}
               onChange={handleChange}
               placeholder="e.g. 2"
-              className="w-full border border-gray-300 rounded-lg p-2"
+              className="w-full bg-[#0a0a0f] border border-[#22222f] rounded-xl p-3 text-white placeholder-[#71717a] outline-none focus:border-pink-500 transition"
               required
             />
           </div>
@@ -115,22 +116,22 @@ const AdminCreateSkills = () => {
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+            className="w-full bg-gradient-to-r from-purple-600 to-pink-500 text-white py-3 rounded-xl font-bold hover:opacity-90 transition shadow-lg shadow-purple-500/20"
           >
             Add Skill
           </button>
         </form>
 
         {message && (
-          <p className="mt-4 text-center text-green-600 font-medium">
+          <p className="mt-4 text-center text-green-400 font-medium">
             {message}
           </p>
         )}
         {error && (
-          <p className="mt-4 text-center text-red-600 font-medium">{error}</p>
+          <p className="mt-4 text-center text-red-400 font-medium">{error}</p>
         )}
       </div>
-    </div>
+    </>
   );
 };
 

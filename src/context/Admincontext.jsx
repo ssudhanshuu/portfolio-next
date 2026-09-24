@@ -15,8 +15,10 @@ export const AdminProvider = ({ children }) => {
     try {
       const response = await fetch(`http://localhost:3000/api/skills`);
       const data = await response.json();
-      if(data){
+      if(data && Array.isArray(data)){
       setSkills(data);
+      } else {
+        setSkills([]);
       }
      
     } catch (error) {

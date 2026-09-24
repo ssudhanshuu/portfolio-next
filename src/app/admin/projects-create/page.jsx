@@ -1,23 +1,14 @@
 "use client";
 
 import React, { useContext, useEffect } from "react";
-import AdminSidebar from "./AdminSidebar";
-import { AdminContext } from "../../context/AdminContext";
+
+import { AdminContext } from "@/context/Admincontext";
 import { Plus } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 
 
 const Card = ({ children }) => (
-  <div className="border rounded-xl shadow-md bg-white">{children}</div>
-);
-
-const Button = ({ children, onClick }) => (
-  <button
-    onClick={onClick}
-    className="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-md"
-  >
-    {children}
-  </button>
+  <div className="bg-[#13131a] rounded-2xl overflow-hidden flex flex-col h-full border border-[#22222f] shadow-lg">{children}</div>
 );
 
 const ImageWithFallback = ({ src, alt, className }) => (
@@ -25,78 +16,84 @@ const ImageWithFallback = ({ src, alt, className }) => (
     src={
       src
         ? src
-        : "https://dummyimage.com/300x200/cccccc/000000.jpg&text=No+Image" 
+        : "https://dummyimage.com/300x200/13131a/a855f7.jpg&text=No+Image"
     }
     alt={alt}
     className={className}
   />
 );
 
-
 export default function AdminProjectCreate() {
- let navigate = useNavigate()
+  let router = useRouter()
   const { projects, fetchProjects } = useContext(AdminContext);
-  const Addhandler = () => {
-   
-    navigate("/admin/create");
-  };
 
   useEffect(() => {
     fetchProjects();
   }, []);
 
   return (
-    <div className="flex md:flex-row flex-col">
-      <AdminSidebar />
-
-      <div className="flex-1 p-4 ml-12">
-        <div className="text-xl flex font-semibold border-b-3 pl-2 mb-4 justify-between">
-          All Projects{" "}
+    <>
+      <div className="flex items-center justify-between mb-8">
+          <h1 className="text-2xl font-bold text-white">All Projects</h1>
           <button
-            className="mr-30 cursor-pointer flex"
-            onClick={Addhandler}
+            className="bg-gradient-to-r from-purple-600 to-pink-500 hover:opacity-90 text-white px-5 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 transition shadow-lg shadow-purple-500/20"
+            onClick={() => router.push("/admin/create")}
           >
+            <Plus size={18} />
             Add Project
-            <Plus />
           </button>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
           {projects.length > 0 ? (
             projects.map((project) => (
               <Card key={project._id}>
-                {/* Title & Description */}
-                <div className="p-4 border-b">
-                  <h3 className="text-lg font-semibold">{project.name}</h3>
-                  <p className="text-sm text-gray-500 mt-1">
-                    {project.tagline}
-                  </p>
-                </div>
-
-                {/* Image & Footer */}
-                <div className="p-4">
+                {/* Image */}
+                <div className="relative">
                   <ImageWithFallback
                     src={project.image}
                     alt={project.name}
-                    className="w-full h-40 object-cover rounded-lg"
+                    className="w-full h-40 object-cover border-b border-[#2b2b40]"
                   />
-
-                  <div className="flex items-center justify-between mt-4">
-                    <span className="inline-flex items-center rounded-full bg-blue-600 px-2.5 py-0.5 text-xs font-medium text-white">
+                  <div className="absolute top-3 right-3">
+                    <span className={`inline-flex items-center rounded-md px-2.5 py-1 text-[10px] uppercase font-bold tracking-wider ${
+                      project.status === 'active' ? 'bg-[#1e293b] text-emerald-400 border border-emerald-500/20' : 
+                      project.status === 'completed' ? 'bg-[#1e293b] text-blue-400 border border-blue-500/20' : 
+                      'bg-[#1e293b] text-gray-400 border border-gray-600/20'
+                    }`}>
                       {project.status}
                     </span>
-                    <Button onClick={() => navigate(`/admin/projectShowcase/${project._id}`)}>
-                      View
-                    </Button>
+                  </div>
+                </div>
+
+                {/* Content */}
+                <div className="p-5 flex-1 flex flex-col">
+                  <h3 className="text-lg font-bold text-white mb-1.5">{project.name}</h3>
+                  <p className="text-sm text-[#92929f] mb-4 line-clamp-2">
+                    {project.tagline || project.description}
+                  </p>
+
+                  <div className="mt-auto flex items-center justify-between pt-4 border-t border-[#2b2b40]">
+                    <span className="text-xs text-indigo-400 font-medium">
+                      {project.category}
+                    </span>
+                    <button 
+                      onClick={() => router.push(`/admin/projectShowcase/${project._id}`)}
+                      className="text-white hover:text-indigo-400 bg-[#2b2b40] hover:bg-[#35354a] px-3 py-1.5 rounded text-xs transition-colors"
+                    >
+                      Manage
+                    </button>
                   </div>
                 </div>
               </Card>
             ))
           ) : (
-            <p>No projects found.</p>
+            <div className="col-span-full text-center py-20 bg-[#1e1e2d] rounded-xl border border-[#2b2b40]">
+              <h3 className="text-lg font-medium text-white">No projects found</h3>
+              <p className="text-sm mt-2 text-[#92929f]">Click "Add Project" to create your first one.</p>
+            </div>
           )}
         </div>
-      </div>
-    </div>
+    </>
   );
 }

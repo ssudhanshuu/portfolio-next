@@ -1,48 +1,43 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Calendar, Clock, ArrowRight } from "lucide-react";
 import Tilt from "react-parallax-tilt";
 
-const dummyBlogs = [
-  {
-    id: 1,
-    title: "Mastering React in 2025",
-    description:
-      "Learn the latest React features and best practices to make your frontend development superfast and scalable.",
-    category: "React",
-    date: "2025-09-01",
-    readTime: "5 min read",
-    gradient: "linear-gradient(135deg, #7c3aed, #3b82f6)",
-  },
-  {
-    id: 2,
-    title: "TailwindCSS Tips & Tricks",
-    description:
-      "Discover how to build clean and attractive UIs with TailwindCSS using some easy and practical tricks.",
-    category: "CSS",
-    date: "2025-08-28",
-    readTime: "3 min read",
-    gradient: "linear-gradient(135deg, #ec4899, #f59e0b)",
-  },
-  {
-    id: 3,
-    title: "Why Node.js Still Rules",
-    description:
-      "Explore why Node.js remains the king of backend development. Dive into its performance and ecosystem.",
-    category: "Node.js",
-    date: "2025-08-20",
-    readTime: "6 min read",
-    gradient: "linear-gradient(135deg, #4ade80, #3b82f6)",
-  },
+const gradients = [
+  "linear-gradient(135deg, #7c3aed, #3b82f6)",
+  "linear-gradient(135deg, #ec4899, #f59e0b)",
+  "linear-gradient(135deg, #4ade80, #3b82f6)",
+  "linear-gradient(135deg, #f43f5e, #7c3aed)",
+  "linear-gradient(135deg, #06b6d4, #3b82f6)",
 ];
 
 export default function Blogs() {
   const [filter, setFilter] = useState("All");
+  const [blogs, setBlogs] = useState([]);
 
-  const categories = ["All", "React", "CSS", "Node.js"];
+  useEffect(() => {
+    fetch("/api/public/blogs")
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setBlogs(data.map((b, i) => ({
+            id: b._id,
+            title: b.name,
+            description: b.description || b.tagline,
+            category: b.category,
+            date: b.createdAt ? new Date(b.createdAt).toISOString().split("T")[0] : "2025-09-01",
+            readTime: "5 min read",
+            gradient: gradients[i % gradients.length],
+          })));
+        }
+      })
+      .catch((err) => console.error("Error fetching blogs:", err));
+  }, []);
 
-  const filteredBlogs = dummyBlogs.filter(
+  const categories = ["All", ...new Set(blogs.map((b) => b.category))];
+
+  const filteredBlogs = blogs.filter(
     (blog) => filter === "All" || blog.category === filter
   );
 

@@ -7,7 +7,7 @@ export async function GET() {
     await dbConnect();
     const allSkills = await Skill.find();
     if (!allSkills || allSkills.length === 0) {
-      return NextResponse.json({ error: "No skills found" }, { status: 404 });
+      return NextResponse.json([]);
     }
     return NextResponse.json(allSkills);
   } catch (err) {

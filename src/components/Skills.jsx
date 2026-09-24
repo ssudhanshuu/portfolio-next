@@ -1,43 +1,32 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Tilt from "react-parallax-tilt";
 
 export function Skills() {
-  const [activeCategory, setActiveCategory] = useState("Frontend");
+  const [activeCategory, setActiveCategory] = useState("");
+  const [skillCategories, setSkillCategories] = useState([]);
 
-  const skillCategories = [
-    {
-      name: "Frontend",
-      icon: "🎨",
-      skills: [
-        { name: "React.js", level: 85, icon: "⚛️" },
-        { name: "JavaScript", level: 80, icon: "🟨" },
-        { name: "TypeScript", level: 75, icon: "🔷" },
-        { name: "Tailwind", level: 75, icon: "🌊" },
-        { name: "HTML/CSS", level: 92, icon: "🌐" },
-        { name: "Bootstrap", level: 92, icon: "🅱️" },
-        { name: "Material-UI", level: 92, icon: "🎯" },
-      ],
-    },
-    {
-      name: "Backend",
-      icon: "⚙️",
-      skills: [
-        { name: "Node.js", level: 80, icon: "🟢" },
-        { name: "Express.js", level: 78, icon: "🚂" },
-        { name: "Socket.io", level: 78, icon: "🔌" },
-        { name: "REST APIs", level: 90, icon: "🔗" },
-      ],
-    },
-    {
-      name: "Database",
-      icon: "🗄️",
-      skills: [
-        { name: "MongoDB", level: 85, icon: "🍃" },
-      ],
-    },
-  ];
+  useEffect(() => {
+    fetch("/api/public/skills")
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          const mapped = data.map((cat) => ({
+            name: cat.category,
+            icon: cat.category === "Frontend" ? "🎨" : cat.category === "Backend" ? "⚙️" : "🗄️",
+            skills: (cat.skills || []).map((s) => ({
+              name: s.name,
+              level: s.proficiency,
+              icon: "💻",
+            })),
+          }));
+          setSkillCategories(mapped);
+          setActiveCategory(mapped[0]?.name || "");
+        }
+      })
+      .catch((err) => console.error("Error fetching skills:", err));
+  }, []);
 
   const activeSkills =
     skillCategories.find((cat) => cat.name === activeCategory)?.skills || [];

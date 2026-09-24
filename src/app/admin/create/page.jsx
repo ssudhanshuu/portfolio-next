@@ -2,13 +2,13 @@
 
 // src/pages/admin/CreateProjectForm.jsx
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 
 
-const BASE_URL =   "http://localhost:3000";
+const BASE_URL = "http://localhost:3000";
 
 export default function CreateProjectForm() {
-  const navigate = useNavigate();
+  const router = useRouter();
   const [form, setForm] = useState({
     name: "",
     tagline: "",
@@ -19,7 +19,7 @@ export default function CreateProjectForm() {
     category: "",
     liveDemo: "",
     github: "",
-    technologies: "" 
+    technologies: ""
   });
 
   // main image (single) and screenshots (multiple)
@@ -138,11 +138,11 @@ export default function CreateProjectForm() {
 
       if (res.ok && data.success) {
         setMessage("✅ Project created successfully!");
-        
+
         clearForm();
-     
+
         setTimeout(() => {
-          navigate("/admin/projects-create");
+          router.push("/admin/projects-create");
         }, 1000);
       } else {
         setMessage(
@@ -158,16 +158,15 @@ export default function CreateProjectForm() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <h2 className="text-2xl font-semibold mb-4">Create New Project</h2>
+    <div className="max-w-4xl mx-auto p-8 bg-[#13131a] rounded-2xl border border-purple-500/40 shadow-[0_0_20px_rgba(124,58,237,0.15)]">
+      <h2 className="text-2xl font-bold mb-6 text-white pb-4 border-b border-[#22222f]">Create New Project</h2>
 
       {message && (
         <div
-          className={`mb-4 p-3 rounded ${
-            message.startsWith("✅")
+          className={`mb-4 p-3 rounded ${message.startsWith("✅")
               ? "bg-green-100 text-green-800"
               : "bg-red-100 text-red-800"
-          }`}
+            }`}
         >
           {message}
         </div>
@@ -177,24 +176,24 @@ export default function CreateProjectForm() {
         {/* Row 1: Name & Tagline */}
         <div className="grid md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium">Project Name *</label>
+            <label className="block text-sm font-semibold text-[#92929f] mb-1.5">Project Name *</label>
             <input
               name="name"
               value={form.name}
               onChange={handleChange}
               required
-              className="mt-1 block w-full p-2 border rounded"
+              className="mt-1 block w-full p-3 bg-[#0a0a0f] border border-[#22222f] rounded-xl text-white placeholder-[#71717a] focus:border-pink-500 focus:ring-1 focus:ring-pink-500 transition-all outline-none"
               placeholder="My Portfolio Website"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium">Tagline</label>
+            <label className="block text-sm font-semibold text-[#92929f] mb-1.5">Tagline</label>
             <input
               name="tagline"
               value={form.tagline}
               onChange={handleChange}
-              className="mt-1 block w-full p-2 border rounded"
+              className="mt-1 block w-full p-3 bg-[#0a0a0f] border border-[#22222f] rounded-xl text-white placeholder-[#71717a] focus:border-pink-500 focus:ring-1 focus:ring-pink-500 transition-all outline-none"
               placeholder="A personal portfolio built with React & Node"
             />
           </div>
@@ -202,14 +201,14 @@ export default function CreateProjectForm() {
 
         {/* Description */}
         <div>
-          <label className="block text-sm font-medium">Description *</label>
+          <label className="block text-sm font-semibold text-[#92929f] mb-1.5">Description *</label>
           <textarea
             name="description"
             value={form.description}
             onChange={handleChange}
             rows={6}
             required
-            className="mt-1 block w-full p-2 border rounded"
+            className="mt-1 block w-full p-2.5 bg-[#151521] border border-[#2b2b40] rounded-lg text-white placeholder-[#6b6b80] focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all outline-none"
             placeholder="Describe the project, goals, features, challenges and outcomes..."
           />
         </div>
@@ -217,12 +216,12 @@ export default function CreateProjectForm() {
         {/* Technologies & Category */}
         <div className="grid md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-sm font-medium">Technologies</label>
+            <label className="block text-sm font-semibold text-[#92929f] mb-1.5">Technologies</label>
             <input
               name="technologies"
               value={form.technologies}
               onChange={handleChange}
-              className="mt-1 block w-full p-2 border rounded"
+              className="mt-1 block w-full p-3 bg-[#0a0a0f] border border-[#22222f] rounded-xl text-white placeholder-[#71717a] focus:border-pink-500 focus:ring-1 focus:ring-pink-500 transition-all outline-none"
               placeholder="React, Node.js, Tailwind CSS"
             />
             <p className="text-xs text-gray-500 mt-1">
@@ -231,24 +230,24 @@ export default function CreateProjectForm() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium">Category *</label>
+            <label className="block text-sm font-semibold text-[#92929f] mb-1.5">Category *</label>
             <input
               name="category"
               value={form.category}
               onChange={handleChange}
               required
-              className="mt-1 block w-full p-2 border rounded"
+              className="mt-1 block w-full p-3 bg-[#0a0a0f] border border-[#22222f] rounded-xl text-white placeholder-[#71717a] focus:border-pink-500 focus:ring-1 focus:ring-pink-500 transition-all outline-none"
               placeholder="Portfolio / Web App"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium">Role</label>
+            <label className="block text-sm font-semibold text-[#92929f] mb-1.5">Role</label>
             <input
               name="role"
               value={form.role}
               onChange={handleChange}
-              className="mt-1 block w-full p-2 border rounded"
+              className="mt-1 block w-full p-3 bg-[#0a0a0f] border border-[#22222f] rounded-xl text-white placeholder-[#71717a] focus:border-pink-500 focus:ring-1 focus:ring-pink-500 transition-all outline-none"
               placeholder="Developer"
             />
           </div>
@@ -257,12 +256,12 @@ export default function CreateProjectForm() {
         {/* Status & Duration */}
         <div className="grid md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium">Status</label>
+            <label className="block text-sm font-semibold text-[#92929f] mb-1.5">Status</label>
             <select
               name="status"
               value={form.status}
               onChange={handleChange}
-              className="mt-1 block w-full p-2 border rounded"
+              className="mt-1 block w-full p-3 bg-[#0a0a0f] border border-[#22222f] rounded-xl text-white placeholder-[#71717a] focus:border-pink-500 focus:ring-1 focus:ring-pink-500 transition-all outline-none"
             >
               <option value="active">Active</option>
               <option value="completed">Completed</option>
@@ -271,12 +270,12 @@ export default function CreateProjectForm() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium">Duration</label>
+            <label className="block text-sm font-semibold text-[#92929f] mb-1.5">Duration</label>
             <input
               name="duration"
               value={form.duration}
               onChange={handleChange}
-              className="mt-1 block w-full p-2 border rounded"
+              className="mt-1 block w-full p-3 bg-[#0a0a0f] border border-[#22222f] rounded-xl text-white placeholder-[#71717a] focus:border-pink-500 focus:ring-1 focus:ring-pink-500 transition-all outline-none"
               placeholder="Jan 2025 - Mar 2025"
             />
           </div>
@@ -285,23 +284,23 @@ export default function CreateProjectForm() {
         {/* Links */}
         <div className="grid md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium">Live Demo URL</label>
+            <label className="block text-sm font-semibold text-[#92929f] mb-1.5">Live Demo URL</label>
             <input
               name="liveDemo"
               value={form.liveDemo}
               onChange={handleChange}
-              className="mt-1 block w-full p-2 border rounded"
+              className="mt-1 block w-full p-3 bg-[#0a0a0f] border border-[#22222f] rounded-xl text-white placeholder-[#71717a] focus:border-pink-500 focus:ring-1 focus:ring-pink-500 transition-all outline-none"
               placeholder="https://example.com"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium">GitHub URL</label>
+            <label className="block text-sm font-semibold text-[#92929f] mb-1.5">GitHub URL</label>
             <input
               name="github"
               value={form.github}
               onChange={handleChange}
-              className="mt-1 block w-full p-2 border rounded"
+              className="mt-1 block w-full p-3 bg-[#0a0a0f] border border-[#22222f] rounded-xl text-white placeholder-[#71717a] focus:border-pink-500 focus:ring-1 focus:ring-pink-500 transition-all outline-none"
               placeholder="https://github.com/username/repo"
             />
           </div>
@@ -309,7 +308,7 @@ export default function CreateProjectForm() {
 
         {/* Main Image */}
         <div>
-          <label className="block text-sm font-medium">Main Image (hero)</label>
+          <label className="block text-sm font-semibold text-[#92929f] mb-1.5">Main Image (hero)</label>
           <input
             type="file"
             accept="image/*"
@@ -341,7 +340,7 @@ export default function CreateProjectForm() {
 
         {/* Screenshots */}
         <div>
-          <label className="block text-sm font-medium">Screenshots (optional)</label>
+          <label className="block text-sm font-semibold text-[#92929f] mb-1.5">Screenshots (optional)</label>
           <input
             type="file"
             accept="image/*"
@@ -373,14 +372,14 @@ export default function CreateProjectForm() {
         </div>
 
         {/* Submit */}
-        <div className="flex items-center justify-end gap-3">
+        <div className="flex items-center justify-end gap-3 pt-6 border-t border-[#22222f]">
           <button
             type="button"
             onClick={() => {
               clearForm();
               setMessage("");
             }}
-            className="px-4 py-2 border rounded"
+            className="px-6 py-2.5 bg-transparent border border-[#22222f] text-white rounded-xl hover:bg-[#22222f] transition"
           >
             Clear
           </button>
@@ -388,7 +387,7 @@ export default function CreateProjectForm() {
           <button
             type="submit"
             disabled={loading}
-            className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            className="px-8 py-2.5 bg-gradient-to-r from-purple-600 to-pink-500 text-white font-bold rounded-xl hover:opacity-90 transition shadow-lg shadow-purple-500/20"
           >
             {loading ? "Saving..." : "Create Project"}
           </button>
