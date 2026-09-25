@@ -1,14 +1,13 @@
 "use client";
 
-// src/pages/admin/CreateblogForm.jsx
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-
 
 const BASE_URL = "http://localhost:3000";
 
 export default function CreateblogForm() {
   const router = useRouter();
+
   const [form, setForm] = useState({
     name: "",
     tagline: "",
@@ -19,57 +18,89 @@ export default function CreateblogForm() {
     category: "",
     liveDemo: "",
     github: "",
-    technologies: ""
+    technologies: "",
   });
 
   // main image (single) and screenshots (multiple)
   const [mainImage, setMainImage] = useState(null);
   const [mainPreview, setMainPreview] = useState(null);
 
-  const [screenshots, setScreenshots] = useState([]); // File objects
-  const [screenshotPreviews, setScreenshotPreviews] = useState([]); // data URLs
+  const [screenshots, setScreenshots] = useState([]);
+  const [screenshotPreviews, setScreenshotPreviews] = useState([]);
 
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // handle text inputs
+  // =========================
+  // HANDLE TEXT INPUTS
+  // =========================
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+
+    setForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
-  // main image change
+  // =========================
+  // MAIN IMAGE
+  // =========================
   const handleMainImage = (e) => {
     const file = e.target.files[0];
+
     if (!file) return;
+
     setMainImage(file);
+
     const reader = new FileReader();
-    reader.onload = () => setMainPreview(reader.result);
+
+    reader.onload = () => {
+      setMainPreview(reader.result);
+    };
+
     reader.readAsDataURL(file);
   };
 
-  // screenshots change (multiple)
+  // =========================
+  // SCREENSHOTS
+  // =========================
   const handleScreenshots = (e) => {
     const files = Array.from(e.target.files);
+
     setScreenshots(files);
 
-    // build previews
     const readers = files.map((file) => {
       return new Promise((res) => {
         const r = new FileReader();
+
         r.onload = () => res(r.result);
+
         r.readAsDataURL(file);
       });
     });
 
-    Promise.all(readers).then((imgs) => setScreenshotPreviews(imgs));
+    Promise.all(readers).then((imgs) => {
+      setScreenshotPreviews(imgs);
+    });
   };
 
+  // =========================
+  // REMOVE SCREENSHOT
+  // =========================
   const removeScreenshot = (index) => {
-    setScreenshots((prev) => prev.filter((_, i) => i !== index));
-    setScreenshotPreviews((prev) => prev.filter((_, i) => i !== index));
+    setScreenshots((prev) =>
+      prev.filter((_, i) => i !== index)
+    );
+
+    setScreenshotPreviews((prev) =>
+      prev.filter((_, i) => i !== index)
+    );
   };
 
+  // =========================
+  // CLEAR FORM
+  // =========================
   const clearForm = () => {
     setForm({
       name: "",
@@ -81,32 +112,42 @@ export default function CreateblogForm() {
       category: "",
       liveDemo: "",
       github: "",
-      technologies: ""
+      technologies: "",
     });
+
     setMainImage(null);
     setMainPreview(null);
+
     setScreenshots([]);
     setScreenshotPreviews([]);
   };
 
+  // =========================
+  // SUBMIT
+  // =========================
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     setMessage("");
     setLoading(true);
 
     try {
-      // Basic client-side validation
+      // Basic validation
       if (
         !form.name.trim() ||
         !form.description.trim() ||
         !form.category.trim()
       ) {
-        setMessage("Please fill name, description and category.");
+        setMessage(
+          "Please fill name, description and category."
+        );
+
         setLoading(false);
         return;
       }
 
       const fd = new FormData();
+
       fd.append("name", form.name);
       fd.append("tagline", form.tagline);
       fd.append("description", form.description);
@@ -116,22 +157,22 @@ export default function CreateblogForm() {
       fd.append("category", form.category);
       fd.append("liveDemo", form.liveDemo);
       fd.append("github", form.github);
-      fd.append("technologies", form.technologies); // comma separated string
+      fd.append("technologies", form.technologies);
 
-      // For backward compatibility: append main image as 'image' (like your previous backend)
+      // Main image
       if (mainImage) {
         fd.append("image", mainImage);
       }
 
-      // Append additional screenshots as array `screenshots[]`
+      // Screenshots
       screenshots.forEach((file) => {
         fd.append("screenshots[]", file);
       });
 
       const res = await fetch(`${BASE_URL}/api/blogs`, {
         method: "POST",
-        body: fd
-        // DO NOT set Content-Type header — browser sets multipart boundary
+        body: fd,
+        // DO NOT set Content-Type
       });
 
       const data = await res.json();
@@ -146,253 +187,585 @@ export default function CreateblogForm() {
         }, 1000);
       } else {
         setMessage(
-          data?.message || "❌ Failed to create blog. Check backend logs."
+          data?.message ||
+          "❌ Failed to create blog. Check backend logs."
         );
       }
     } catch (err) {
       console.error(err);
-      setMessage("⚠️ Something went wrong. See console.");
+
+      setMessage(
+        "⚠️ Something went wrong. See console."
+      );
     } finally {
       setLoading(false);
     }
   };
 
+  // =========================
+  // CONTACT STYLE
+  // =========================
+
+  const inputStyle = {
+    width: "100%",
+    boxSizing: "border-box",
+    padding: "13px 14px",
+    borderRadius: "var(--radius-md)",
+    border: "1px solid rgba(255,255,255,0.1)",
+    background: "rgba(255,255,255,0.03)",
+    color: "var(--text-primary)",
+    fontSize: "0.95rem",
+    fontWeight: 500,
+    outline: "none",
+    transition: "all 0.3s ease",
+  };
+
+  const labelStyle = {
+    display: "block",
+    fontSize: "0.85rem",
+    fontWeight: 600,
+    marginBottom: 6,
+    color: "var(--text-secondary)",
+  };
+
   return (
-    <div className="max-w-4xl mx-auto p-8 bg-[#13131a] rounded-2xl border border-purple-500/40 shadow-[0_0_20px_rgba(124,58,237,0.15)]">
-      <h2 className="text-2xl font-bold mb-6 text-white pb-4 border-b border-[#22222f]">Create New Blog</h2>
+    <section
+      id="create-blog"
+      style={{
+        padding: "10px 0",
+        position: "relative",
+      }}
+    >
 
-      {message && (
-        <div
-          className={`mb-4 p-3 rounded ${message.startsWith("✅")
-              ? "bg-green-100 text-green-800"
-              : "bg-red-100 text-red-800"
-            }`}
+      <div
+        className="card-3d"
+        style={{
+          padding: 36,
+          overflow: "hidden",
+        }}
+      >
+        {/* SUCCESS / ERROR MESSAGE */}
+        {message && (
+          <div
+            style={{
+              marginBottom: 20,
+              padding: "14px 18px",
+              borderRadius: "var(--radius-md)",
+              background: message.startsWith("✅")
+                ? "rgba(74, 222, 128, 0.1)"
+                : "rgba(239, 68, 68, 0.1)",
+              border: message.startsWith("✅")
+                ? "1px solid rgba(74, 222, 128, 0.2)"
+                : "1px solid rgba(239, 68, 68, 0.2)",
+              color: message.startsWith("✅")
+                ? "#4ade80"
+                : "#ef4444",
+              fontSize: "0.9rem",
+            }}
+          >
+            {message}
+          </div>
+        )}
+
+        <form
+          onSubmit={handleSubmit}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 20,
+          }}
         >
-          {message}
-        </div>
-      )}
+          {/* =========================
+                BLOG NAME + TAGLINE
+            ========================== */}
+          <div
+            className="form-row"
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: 16,
+            }}
+          >
+            <div>
+              <label style={labelStyle}>
+                Blog Name *
+              </label>
 
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-6">
-        {/* Row 1: Name & Tagline */}
-        <div className="grid md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-semibold text-[#92929f] mb-1.5">blog Name *</label>
-            <input
-              name="name"
-              value={form.name}
-              onChange={handleChange}
-              required
-              className="mt-1 block w-full p-3 bg-[#0a0a0f] border border-[#22222f] rounded-xl text-white placeholder-[#71717a] focus:border-pink-500 focus:ring-1 focus:ring-pink-500 transition-all outline-none"
-              placeholder="My Portfolio Website"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-semibold text-[#92929f] mb-1.5">Tagline</label>
-            <input
-              name="tagline"
-              value={form.tagline}
-              onChange={handleChange}
-              className="mt-1 block w-full p-3 bg-[#0a0a0f] border border-[#22222f] rounded-xl text-white placeholder-[#71717a] focus:border-pink-500 focus:ring-1 focus:ring-pink-500 transition-all outline-none"
-              placeholder="A personal portfolio built with React & Node"
-            />
-          </div>
-        </div>
-
-        {/* Description */}
-        <div>
-          <label className="block text-sm font-semibold text-[#92929f] mb-1.5">Description *</label>
-          <textarea
-            name="description"
-            value={form.description}
-            onChange={handleChange}
-            rows={6}
-            required
-            className="mt-1 block w-full p-2.5 bg-[#151521] border border-[#2b2b40] rounded-lg text-white placeholder-[#6b6b80] focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all outline-none"
-            placeholder="Describe the blog, goals, features, challenges and outcomes..."
-          />
-        </div>
-
-        {/* Technologies & Category */}
-        <div className="grid md:grid-cols-3 gap-4">
-          <div>
-            <label className="block text-sm font-semibold text-[#92929f] mb-1.5">Technologies</label>
-            <input
-              name="technologies"
-              value={form.technologies}
-              onChange={handleChange}
-              className="mt-1 block w-full p-3 bg-[#0a0a0f] border border-[#22222f] rounded-xl text-white placeholder-[#71717a] focus:border-pink-500 focus:ring-1 focus:ring-pink-500 transition-all outline-none"
-              placeholder="React, Node.js, Tailwind CSS"
-            />
-            <p className="text-xs text-gray-500 mt-1">
-              Comma separated (will show as tags on detail page)
-            </p>
-          </div>
-
-          <div>
-            <label className="block text-sm font-semibold text-[#92929f] mb-1.5">Category *</label>
-            <input
-              name="category"
-              value={form.category}
-              onChange={handleChange}
-              required
-              className="mt-1 block w-full p-3 bg-[#0a0a0f] border border-[#22222f] rounded-xl text-white placeholder-[#71717a] focus:border-pink-500 focus:ring-1 focus:ring-pink-500 transition-all outline-none"
-              placeholder="Portfolio / Web App"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-semibold text-[#92929f] mb-1.5">Role</label>
-            <input
-              name="role"
-              value={form.role}
-              onChange={handleChange}
-              className="mt-1 block w-full p-3 bg-[#0a0a0f] border border-[#22222f] rounded-xl text-white placeholder-[#71717a] focus:border-pink-500 focus:ring-1 focus:ring-pink-500 transition-all outline-none"
-              placeholder="Developer"
-            />
-          </div>
-        </div>
-
-        {/* Status & Duration */}
-        <div className="grid md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-semibold text-[#92929f] mb-1.5">Status</label>
-            <select
-              name="status"
-              value={form.status}
-              onChange={handleChange}
-              className="mt-1 block w-full p-3 bg-[#0a0a0f] border border-[#22222f] rounded-xl text-white placeholder-[#71717a] focus:border-pink-500 focus:ring-1 focus:ring-pink-500 transition-all outline-none"
-            >
-              <option value="active">Active</option>
-              <option value="completed">Completed</option>
-              <option value="inactive">Inactive</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-semibold text-[#92929f] mb-1.5">Duration</label>
-            <input
-              name="duration"
-              value={form.duration}
-              onChange={handleChange}
-              className="mt-1 block w-full p-3 bg-[#0a0a0f] border border-[#22222f] rounded-xl text-white placeholder-[#71717a] focus:border-pink-500 focus:ring-1 focus:ring-pink-500 transition-all outline-none"
-              placeholder="Jan 2025 - Mar 2025"
-            />
-          </div>
-        </div>
-
-        {/* Links */}
-        <div className="grid md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-semibold text-[#92929f] mb-1.5">Live Demo URL</label>
-            <input
-              name="liveDemo"
-              value={form.liveDemo}
-              onChange={handleChange}
-              className="mt-1 block w-full p-3 bg-[#0a0a0f] border border-[#22222f] rounded-xl text-white placeholder-[#71717a] focus:border-pink-500 focus:ring-1 focus:ring-pink-500 transition-all outline-none"
-              placeholder="https://example.com"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-semibold text-[#92929f] mb-1.5">GitHub URL</label>
-            <input
-              name="github"
-              value={form.github}
-              onChange={handleChange}
-              className="mt-1 block w-full p-3 bg-[#0a0a0f] border border-[#22222f] rounded-xl text-white placeholder-[#71717a] focus:border-pink-500 focus:ring-1 focus:ring-pink-500 transition-all outline-none"
-              placeholder="https://github.com/username/repo"
-            />
-          </div>
-        </div>
-
-        {/* Main Image */}
-        <div>
-          <label className="block text-sm font-semibold text-[#92929f] mb-1.5">Main Image (hero)</label>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleMainImage}
-            className="mt-1 block w-full"
-          />
-          {mainPreview && (
-            <div className="mt-3 flex items-start gap-4">
-              <img
-                src={mainPreview}
-                alt="main preview"
-                className="w-48 h-28 object-cover rounded"
+              <input
+                type="text"
+                name="name"
+                placeholder="My Blog"
+                style={inputStyle}
+                value={form.name}
+                onChange={handleChange}
+                required
               />
-              <div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setMainImage(null);
-                    setMainPreview(null);
-                  }}
-                  className="text-sm text-red-600"
-                >
-                  Remove
-                </button>
-              </div>
             </div>
-          )}
-        </div>
 
-        {/* Screenshots */}
-        <div>
-          <label className="block text-sm font-semibold text-[#92929f] mb-1.5">Screenshots (optional)</label>
-          <input
-            type="file"
-            accept="image/*"
-            multiple
-            onChange={handleScreenshots}
-            className="mt-1 block w-full"
-          />
+            <div>
+              <label style={labelStyle}>
+                Tagline
+              </label>
 
-          {screenshotPreviews.length > 0 && (
-            <div className="mt-3 grid grid-cols-3 gap-3">
-              {screenshotPreviews.map((src, idx) => (
-                <div key={idx} className="relative">
+              <input
+                type="text"
+                name="tagline"
+                placeholder="A short description of your blog"
+                style={inputStyle}
+                value={form.tagline}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
+
+          {/* =========================
+                DESCRIPTION
+            ========================== */}
+          <div>
+            <label style={labelStyle}>
+              Description *
+            </label>
+
+            <textarea
+              name="description"
+              rows={6}
+              placeholder="Describe the blog, goals, features, challenges and outcomes..."
+              style={{
+                ...inputStyle,
+                resize: "vertical",
+                minHeight: 120,
+              }}
+              value={form.description}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          {/* =========================
+                TECHNOLOGIES + CATEGORY + ROLE
+            ========================== */}
+          <div
+            className="form-selects"
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr 1fr",
+              gap: 16,
+            }}
+          >
+            <div>
+              <label style={labelStyle}>
+                Technologies
+              </label>
+
+              <input
+                type="text"
+                name="technologies"
+                placeholder="React, Node.js, Tailwind CSS"
+                style={inputStyle}
+                value={form.technologies}
+                onChange={handleChange}
+              />
+
+              <p
+                style={{
+                  fontSize: "0.75rem",
+                  color: "var(--text-muted)",
+                  marginTop: 6,
+                  marginBottom: 0,
+                }}
+              >
+                Comma separated
+              </p>
+            </div>
+
+            <div>
+              <label style={labelStyle}>
+                Category *
+              </label>
+
+              <input
+                type="text"
+                name="category"
+                placeholder="Technology / Development"
+                style={inputStyle}
+                value={form.category}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div>
+              <label style={labelStyle}>
+                Role
+              </label>
+
+              <input
+                type="text"
+                name="role"
+                placeholder="Developer / Writer"
+                style={inputStyle}
+                value={form.role}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
+
+          {/* =========================
+                STATUS + DURATION
+            ========================== */}
+          <div
+            className="form-row"
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: 16,
+            }}
+          >
+            <div>
+              <label style={labelStyle}>
+                Status
+              </label>
+
+              <select
+                name="status"
+                value={form.status}
+                onChange={handleChange}
+                style={{
+                  ...inputStyle,
+                  cursor: "pointer",
+                  appearance: "none",
+                }}
+              >
+                <option value="active">
+                  Active
+                </option>
+
+                <option value="completed">
+                  Completed
+                </option>
+
+                <option value="inactive">
+                  Inactive
+                </option>
+              </select>
+            </div>
+
+            <div>
+              <label style={labelStyle}>
+                Duration
+              </label>
+
+              <input
+                type="text"
+                name="duration"
+                placeholder="Jan 2025 - Mar 2025"
+                style={inputStyle}
+                value={form.duration}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
+
+          {/* =========================
+                LIVE DEMO + GITHUB
+            ========================== */}
+          <div
+            className="form-row"
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: 16,
+            }}
+          >
+            <div>
+              <label style={labelStyle}>
+                Live Demo URL
+              </label>
+
+              <input
+                type="url"
+                name="liveDemo"
+                placeholder="https://example.com"
+                style={inputStyle}
+                value={form.liveDemo}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div>
+              <label style={labelStyle}>
+                GitHub URL
+              </label>
+
+              <input
+                type="url"
+                name="github"
+                placeholder="https://github.com/username/repo"
+                style={inputStyle}
+                value={form.github}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
+
+          {/* =========================
+                MAIN IMAGE
+            ========================== */}
+          <div>
+            <label style={labelStyle}>
+              Main Image (Hero)
+            </label>
+
+            <div
+              style={{
+                padding: 16,
+                borderRadius: "var(--radius-md)",
+                border:
+                  "1px dashed rgba(124, 58, 237, 0.3)",
+                background:
+                  "rgba(124, 58, 237, 0.03)",
+              }}
+            >
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleMainImage}
+                style={{
+                  width: "100%",
+                  color: "var(--text-secondary)",
+                }}
+              />
+
+              {mainPreview && (
+                <div
+                  style={{
+                    marginTop: 16,
+                    display: "flex",
+                    alignItems: "flex-start",
+                    gap: 16,
+                  }}
+                >
                   <img
-                    src={src}
-                    alt={`shot-${idx}`}
-                    className="w-full h-24 object-cover rounded"
+                    src={mainPreview}
+                    alt="main preview"
+                    style={{
+                      width: 220,
+                      height: 130,
+                      objectFit: "cover",
+                      borderRadius:
+                        "var(--radius-md)",
+                    }}
                   />
+
                   <button
                     type="button"
-                    onClick={() => removeScreenshot(idx)}
-                    className="absolute top-1 right-1 bg-white rounded-full p-1 text-red-600 text-sm shadow"
+                    onClick={() => {
+                      setMainImage(null);
+                      setMainPreview(null);
+                    }}
+                    style={{
+                      border: "none",
+                      background: "transparent",
+                      color: "#ef4444",
+                      cursor: "pointer",
+                      fontSize: "0.85rem",
+                    }}
                   >
-                    ✕
+                    Remove
                   </button>
                 </div>
-              ))}
+              )}
             </div>
-          )}
-        </div>
+          </div>
 
-        {/* Submit */}
-        <div className="flex items-center justify-end gap-3 pt-6 border-t border-[#22222f]">
-          <button
-            type="button"
-            onClick={() => {
-              clearForm();
-              setMessage("");
+          {/* =========================
+                SCREENSHOTS
+            ========================== */}
+          <div>
+            <label style={labelStyle}>
+              Screenshots (optional)
+            </label>
+
+            <div
+              style={{
+                padding: 16,
+                borderRadius: "var(--radius-md)",
+                border:
+                  "1px dashed rgba(124, 58, 237, 0.3)",
+                background:
+                  "rgba(124, 58, 237, 0.03)",
+              }}
+            >
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleScreenshots}
+                style={{
+                  width: "100%",
+                  color: "var(--text-secondary)",
+                }}
+              />
+
+              {screenshotPreviews.length > 0 && (
+                <div
+                  style={{
+                    marginTop: 16,
+                    display: "grid",
+                    gridTemplateColumns:
+                      "repeat(3, 1fr)",
+                    gap: 12,
+                  }}
+                >
+                  {screenshotPreviews.map(
+                    (src, idx) => (
+                      <div
+                        key={idx}
+                        style={{
+                          position: "relative",
+                          overflow: "hidden",
+                          borderRadius:
+                            "var(--radius-md)",
+                          border:
+                            "1px solid rgba(255,255,255,0.1)",
+                        }}
+                      >
+                        <img
+                          src={src}
+                          alt={`shot-${idx}`}
+                          style={{
+                            width: "100%",
+                            height: 120,
+                            objectFit: "cover",
+                            display: "block",
+                          }}
+                        />
+
+                        <button
+                          type="button"
+                          onClick={() =>
+                            removeScreenshot(idx)
+                          }
+                          style={{
+                            position: "absolute",
+                            top: 6,
+                            right: 6,
+                            width: 26,
+                            height: 26,
+                            borderRadius: "50%",
+                            border: "none",
+                            background:
+                              "rgba(0,0,0,0.7)",
+                            color: "#fff",
+                            cursor: "pointer",
+                          }}
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    )
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* =========================
+                SUBMIT
+            ========================== */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
             }}
-            className="px-6 py-2.5 bg-transparent border border-[#22222f] text-white rounded-xl hover:bg-[#22222f] transition"
           >
-            Clear
-          </button>
+            <p
+              style={{
+                fontSize: "0.8rem",
+                color: "var(--text-muted)",
+                margin: 0,
+              }}
+            >
+              * Required fields
+            </p>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="px-8 py-2.5 bg-gradient-to-r from-purple-600 to-pink-500 text-white font-bold rounded-xl hover:opacity-90 transition shadow-lg shadow-purple-500/20"
-          >
-            {loading ? "Saving..." : "Create blog"}
-          </button>
-        </div>
-      </form>
-    </div>
+            <div
+              style={{
+                display: "flex",
+                gap: 12,
+              }}
+            >
+              <button
+                type="button"
+                onClick={() => {
+                  clearForm();
+                  setMessage("");
+                }}
+                style={{
+                  padding: "11px 20px",
+                  borderRadius: "var(--radius-md)",
+                  border:
+                    "1px solid rgba(255,255,255,0.1)",
+                  background:
+                    "rgba(255,255,255,0.03)",
+                  color: "var(--text-secondary)",
+                  cursor: "pointer",
+                }}
+              >
+                Clear
+              </button>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="btn-primary"
+                style={{
+                  opacity: loading ? 0.6 : 1,
+                  cursor: loading
+                    ? "not-allowed"
+                    : "pointer",
+                }}
+              >
+                {loading
+                  ? "Saving..."
+                  : "Create Blog"}
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+
+      {/* =========================
+          RESPONSIVE CSS
+      ========================== */}
+      <style jsx>{`
+        @media (max-width: 768px) {
+          .form-row,
+          .form-selects {
+            grid-template-columns: 1fr !important;
+          }
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+          color: var(--text-muted);
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+          border-color: var(--accent-light) !important;
+          box-shadow: 0 0 0 3px
+            rgba(124, 58, 237, 0.08);
+        }
+
+        select option {
+          background: #11111b;
+          color: white;
+        }
+      `}</style>
+    </section>
   );
 }

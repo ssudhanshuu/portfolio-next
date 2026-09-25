@@ -15,12 +15,9 @@ export default function AdminLayout({ children }) {
               </div>
               <h2 className="text-2xl font-bold text-white tracking-wide hidden sm:block">Admin</h2>
             </div>
-            
+
             <div className="flex items-center gap-6">
-              <div className="hidden md:flex bg-[#13131a] rounded-lg items-center px-4 py-2.5 border border-[#22222f] w-72">
-                <MagnifyingGlassIcon className="w-5 h-5 text-[#a1a1aa] mr-2" />
-                <input type="text" placeholder="Search" className="bg-transparent border-none outline-none text-sm text-white w-full placeholder-[#71717a]" />
-              </div>
+
               <div className="flex items-center gap-4">
                 <div className="relative cursor-pointer">
                   <BellIcon className="w-6 h-6 text-[#a1a1aa] hover:text-white transition" />
@@ -34,16 +31,21 @@ export default function AdminLayout({ children }) {
           </div>
         </header>
 
-        <div className="w-full max-w-6xl mx-auto flex flex-col md:flex-row gap-12 px-4 lg:px-16 py-8">
-          <div className="w-full md:w-72 flex-shrink-0">
+        <div className="w-full max-w-[1160px] mx-auto flex flex-col md:flex-row gap-10 px-4">
+
+          {/* Left */}
+          <div className="w-full md:w-[397px] flex-shrink-0">
             <AdminSidebar />
           </div>
-          
-          <main className="flex-1 w-full overflow-hidden">
+
+          {/* Right */}
+          <main className="w-full md:w-[795px] flex-shrink-0">
             {children}
           </main>
+
         </div>
+
       </div>
-    </AdminProvider>
+    </AdminProvider >
   );
 }

@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 
-const BASE_URL =   "http://localhost:3000";
+const BASE_URL = "http://localhost:3000";
 
 export default function CreateblogForm() {
   const navigate = useNavigate();
@@ -17,7 +17,7 @@ export default function CreateblogForm() {
     category: "",
     liveDemo: "",
     github: "",
-    technologies: "" 
+    technologies: ""
   });
 
   // main image (single) and screenshots (multiple)
@@ -136,9 +136,9 @@ export default function CreateblogForm() {
 
       if (res.ok && data.success) {
         setMessage("✅ blog created successfully!");
-        
+
         clearForm();
-     
+
         setTimeout(() => {
           navigate("/admin/blogs-create");
         }, 1000);
@@ -161,11 +161,10 @@ export default function CreateblogForm() {
 
       {message && (
         <div
-          className={`mb-4 p-3 rounded ${
-            message.startsWith("✅")
+          className={`mb-4 p-3 rounded ${message.startsWith("✅")
               ? "bg-green-100 text-green-800"
               : "bg-red-100 text-red-800"
-          }`}
+            }`}
         >
           {message}
         </div>

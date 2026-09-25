@@ -13,17 +13,17 @@ import { Skills } from '../component/Skills'
 
 function Home() {
   return (
-  <div className='m-0 p-0'>
-    <Navbar />
-    <Hero/>
-    <About/>
-    <Skills/>
-    <Projects/>
-    <Blogs/>
-    <Testimonials/>
-    <Contact/>
-    <Footer/>
-  </div>
+    <div className='m-10 p-0'>
+      <Navbar />
+      <Hero />
+      <About />
+      <Skills />
+      <Projects />
+      <Blogs />
+      <Testimonials />
+      <Contact />
+      <Footer />
+    </div>
   )
 }
 

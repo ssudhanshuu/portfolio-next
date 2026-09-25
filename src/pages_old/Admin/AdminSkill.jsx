@@ -47,9 +47,9 @@ function AdminSkill() {
   // Filter data to display based on selected category
   const displayedSkills = selectedCategory
     ? selectedCategoryData?.skills.map((s) => ({
-        ...s,
-        category: selectedCategoryData.category,
-      })) || []
+      ...s,
+      category: selectedCategoryData.category,
+    })) || []
     : allSkills;
 
   return (
@@ -71,11 +71,10 @@ function AdminSkill() {
         <div className="flex flex-wrap gap-3 mb-6">
           <button
             onClick={() => setSelectedCategory("")}
-            className={`px-5 py-2 rounded-lg font-medium transition-all ${
-              selectedCategory === ""
+            className={`px-5 py-2 rounded-lg font-medium transition-all ${selectedCategory === ""
                 ? "bg-blue-600 text-white shadow"
                 : "bg-white dark:bg-gray-800 border hover:bg-gray-100 dark:hover:bg-gray-700"
-            }`}
+              }`}
           >
             All
           </button>
@@ -83,11 +82,10 @@ function AdminSkill() {
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-5 py-2 rounded-lg font-medium transition-all ${
-                selectedCategory === cat
+              className={`px-5 py-2 rounded-lg font-medium transition-all ${selectedCategory === cat
                   ? "bg-blue-600 text-white shadow"
                   : "bg-white dark:bg-gray-800 border hover:bg-gray-100 dark:hover:bg-gray-700"
-              }`}
+                }`}
             >
               {cat}
             </button>
