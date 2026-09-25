@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 const BASE_URL = "http://localhost:3000";
 
@@ -28,7 +29,6 @@ export default function CreateblogForm() {
   const [screenshots, setScreenshots] = useState([]);
   const [screenshotPreviews, setScreenshotPreviews] = useState([]);
 
-  const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
   // =========================
@@ -128,7 +128,6 @@ export default function CreateblogForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    setMessage("");
     setLoading(true);
 
     try {
@@ -138,9 +137,7 @@ export default function CreateblogForm() {
         !form.description.trim() ||
         !form.category.trim()
       ) {
-        setMessage(
-          "Please fill name, description and category."
-        );
+        toast.error("Please fill name, description and category.");
 
         setLoading(false);
         return;
@@ -178,7 +175,7 @@ export default function CreateblogForm() {
       const data = await res.json();
 
       if (res.ok && data.success) {
-        setMessage("✅ blog created successfully!");
+        toast.success(data.message || "Blog created successfully!");
 
         clearForm();
 
@@ -186,17 +183,12 @@ export default function CreateblogForm() {
           router.push("/admin/blogs");
         }, 1000);
       } else {
-        setMessage(
-          data?.message ||
-          "❌ Failed to create blog. Check backend logs."
-        );
+        toast.error(data?.message || "Failed to create blog. Check backend logs.");
       }
     } catch (err) {
       console.error(err);
 
-      setMessage(
-        "⚠️ Something went wrong. See console."
-      );
+      toast.error("Something went wrong. See console.");
     } finally {
       setLoading(false);
     }
@@ -244,29 +236,6 @@ export default function CreateblogForm() {
           overflow: "hidden",
         }}
       >
-        {/* SUCCESS / ERROR MESSAGE */}
-        {message && (
-          <div
-            style={{
-              marginBottom: 20,
-              padding: "14px 18px",
-              borderRadius: "var(--radius-md)",
-              background: message.startsWith("✅")
-                ? "rgba(74, 222, 128, 0.1)"
-                : "rgba(239, 68, 68, 0.1)",
-              border: message.startsWith("✅")
-                ? "1px solid rgba(74, 222, 128, 0.2)"
-                : "1px solid rgba(239, 68, 68, 0.2)",
-              color: message.startsWith("✅")
-                ? "#4ade80"
-                : "#ef4444",
-              fontSize: "0.9rem",
-            }}
-          >
-            {message}
-          </div>
-        )}
-
         <form
           onSubmit={handleSubmit}
           style={{
@@ -700,7 +669,6 @@ export default function CreateblogForm() {
                 type="button"
                 onClick={() => {
                   clearForm();
-                  setMessage("");
                 }}
                 style={{
                   padding: "11px 20px",

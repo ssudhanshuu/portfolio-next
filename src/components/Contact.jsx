@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { Mail, Phone, MapPin, Send, Loader2 } from "lucide-react";
+import { toast } from "react-toastify";
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -38,12 +39,29 @@ export default function Contact() {
         success: false,
         error: "Please fill all required fields.",
       });
+      toast.error("Please fill all required fields.");
       return;
     }
+
     try {
       setStatus({ loading: true, success: false, error: "" });
-      await new Promise((res) => setTimeout(res, 2000));
+
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result?.message || "Something went wrong. Try again!");
+      }
+
       setStatus({ loading: false, success: true, error: "" });
+      toast.success("Thank you for your message. I'll reply within 24 hours.");
       setFormData({
         name: "",
         email: "",
@@ -55,12 +73,13 @@ export default function Contact() {
         budget: "",
         timeline: "",
       });
-    } catch {
+    } catch (error) {
       setStatus({
         loading: false,
         success: false,
-        error: "Something went wrong. Try again!",
+        error: error.message || "Something went wrong. Try again!",
       });
+      toast.error(error.message || "Something went wrong. Try again!");
     }
   };
 
@@ -277,37 +296,6 @@ export default function Contact() {
             className="card-3d"
             style={{ padding: 36, overflow: "hidden" }}
           >
-            {status.success && (
-              <div
-                style={{
-                  marginBottom: 20,
-                  padding: "14px 18px",
-                  borderRadius: "var(--radius-md)",
-                  background: "rgba(74, 222, 128, 0.1)",
-                  border: "1px solid rgba(74, 222, 128, 0.2)",
-                  color: "#4ade80",
-                  fontSize: "0.9rem",
-                }}
-              >
-                ✅ Thank you for your message! I&apos;ll reply within 24 hours.
-              </div>
-            )}
-            {status.error && (
-              <div
-                style={{
-                  marginBottom: 20,
-                  padding: "14px 18px",
-                  borderRadius: "var(--radius-md)",
-                  background: "rgba(239, 68, 68, 0.1)",
-                  border: "1px solid rgba(239, 68, 68, 0.2)",
-                  color: "#ef4444",
-                  fontSize: "0.9rem",
-                }}
-              >
-                ⚠️ {status.error}
-              </div>
-            )}
-
             <form
               onSubmit={handleSubmit}
               style={{

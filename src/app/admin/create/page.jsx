@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 const BASE_URL = "http://localhost:3000";
 
@@ -27,7 +28,6 @@ export default function CreateProjectForm() {
   const [screenshots, setScreenshots] = useState([]);
   const [screenshotPreviews, setScreenshotPreviews] = useState([]);
 
-  const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -109,7 +109,6 @@ export default function CreateProjectForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    setMessage("");
     setLoading(true);
 
     try {
@@ -118,9 +117,7 @@ export default function CreateProjectForm() {
         !form.description.trim() ||
         !form.category.trim()
       ) {
-        setMessage(
-          "Please fill name, description and category."
-        );
+        toast.error("Please fill name, description and category.");
 
         setLoading(false);
         return;
@@ -155,7 +152,7 @@ export default function CreateProjectForm() {
       const data = await res.json();
 
       if (res.ok && data.success) {
-        setMessage("✅ Project created successfully!");
+        toast.success(data.message || "Project created successfully!");
 
         clearForm();
 
@@ -163,17 +160,12 @@ export default function CreateProjectForm() {
           router.push("/admin/projects-create");
         }, 1000);
       } else {
-        setMessage(
-          data?.message ||
-          "❌ Failed to create project. Check backend logs."
-        );
+        toast.error(data?.message || "Failed to create project. Check backend logs.");
       }
     } catch (err) {
       console.error(err);
 
-      setMessage(
-        "⚠️ Something went wrong. See console."
-      );
+      toast.error("Something went wrong. See console.");
     } finally {
       setLoading(false);
     }
@@ -229,29 +221,6 @@ export default function CreateProjectForm() {
             overflow: "hidden",
           }}
         >
-          {/* MESSAGE */}
-          {message && (
-            <div
-              style={{
-                marginBottom: 20,
-                padding: "14px 18px",
-                borderRadius: "var(--radius-md)",
-                background: message.startsWith("✅")
-                  ? "rgba(74, 222, 128, 0.1)"
-                  : "rgba(239, 68, 68, 0.1)",
-                border: message.startsWith("✅")
-                  ? "1px solid rgba(74, 222, 128, 0.2)"
-                  : "1px solid rgba(239, 68, 68, 0.2)",
-                color: message.startsWith("✅")
-                  ? "#4ade80"
-                  : "#ef4444",
-                fontSize: "0.9rem",
-              }}
-            >
-              {message}
-            </div>
-          )}
-
           <form
             onSubmit={handleSubmit}
             style={{
@@ -678,7 +647,6 @@ export default function CreateProjectForm() {
                   type="button"
                   onClick={() => {
                     clearForm();
-                    setMessage("");
                   }}
                   style={{
                     padding: "11px 20px",

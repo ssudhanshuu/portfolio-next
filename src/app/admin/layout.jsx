@@ -23,7 +23,7 @@ export default function AdminLayout({ children }) {
                   <BellIcon className="w-6 h-6 text-[#a1a1aa] hover:text-white transition" />
                   <span className="absolute -top-1 -right-1 bg-pink-500 w-2.5 h-2.5 rounded-full"></span>
                 </div>
-                <div className="w-9 h-9 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center cursor-pointer">
+                <div className="w-9 h-9 rounded-full bg-linear-to-r from-purple-500 to-pink-500 flex items-center justify-center cursor-pointer">
                   <span className="text-sm font-bold">U</span>
                 </div>
               </div>

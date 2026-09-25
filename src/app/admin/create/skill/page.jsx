@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 const AdminCreateSkills = () => {
   const [formData, setFormData] = useState({
@@ -11,9 +12,6 @@ const AdminCreateSkills = () => {
     proficiency: "",
     year: "",
   });
-
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
 
   const router = useRouter();
 
@@ -27,18 +25,10 @@ const AdminCreateSkills = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    setMessage("");
-    setError("");
-
-    router.push("/admin/skills");
-
     try {
-      const res = await axios.post(
-        "http://localhost:3000/api/skills/create",
-        formData
-      );
+      const res = await axios.post("/api/skills", formData);
 
-      setMessage("✅ Skill added successfully!");
+      toast.success("Skill added successfully!");
 
       setFormData({
         category: "",
@@ -48,15 +38,13 @@ const AdminCreateSkills = () => {
       });
 
       console.log("Response:", res.data);
+
+      router.push("/admin/skills");
     } catch (err) {
       if (err.response?.status === 409) {
-        setError(
-          "⚠️ Skill already exists in this category."
-        );
+        toast.error("Skill already exists in this category.");
       } else {
-        setError(
-          "❌ Failed to add skill. Please try again."
-        );
+        toast.error("Failed to add skill. Please try again.");
       }
 
       console.error(err);
@@ -111,50 +99,6 @@ const AdminCreateSkills = () => {
             overflow: "hidden",
           }}
         >
-          {/* =================================
-              SUCCESS MESSAGE
-          ================================== */}
-
-          {message && (
-            <div
-              style={{
-                marginBottom: 20,
-                padding: "14px 18px",
-                borderRadius: "var(--radius-md)",
-                background:
-                  "rgba(74, 222, 128, 0.1)",
-                border:
-                  "1px solid rgba(74, 222, 128, 0.2)",
-                color: "#4ade80",
-                fontSize: "0.9rem",
-              }}
-            >
-              {message}
-            </div>
-          )}
-
-          {/* =================================
-              ERROR MESSAGE
-          ================================== */}
-
-          {error && (
-            <div
-              style={{
-                marginBottom: 20,
-                padding: "14px 18px",
-                borderRadius: "var(--radius-md)",
-                background:
-                  "rgba(239, 68, 68, 0.1)",
-                border:
-                  "1px solid rgba(239, 68, 68, 0.2)",
-                color: "#ef4444",
-                fontSize: "0.9rem",
-              }}
-            >
-              {error}
-            </div>
-          )}
-
           {/* =================================
               SAME CONTACT FORM STRUCTURE
           ================================== */}

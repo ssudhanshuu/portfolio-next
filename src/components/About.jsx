@@ -6,9 +6,9 @@ import Tilt from "react-parallax-tilt";
 
 export function About() {
   const stats = [
-    { icon: Code2, value: "50+", label: "Projects Completed", color: "#7c3aed" },
-    { icon: Users, value: "30+", label: "Happy Clients", color: "#4ade80" },
-    { icon: Award, value: "5+", label: "Years Experience", color: "#f59e0b" },
+    { icon: Code2, value: "5+", label: "Projects Completed", color: "#7c3aed" },
+    { icon: Users, value: "many", label: "Happy Clients", color: "#4ade80" },
+    { icon: Award, value: "Trusted", label: "Years Experience", color: "#f59e0b" },
     { icon: Coffee, value: "∞", label: "Cups of Coffee", color: "#ec4899" },
   ];
 

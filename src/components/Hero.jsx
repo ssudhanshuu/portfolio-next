@@ -52,12 +52,6 @@ export function Hero() {
     }
   };
 
-  const stats = [
-    { value: "5+", label: "Years Experience" },
-    { value: "50+", label: "Projects Completed" },
-    { value: "30+", label: "Happy Clients" },
-    { value: "∞", label: "Cups of Coffee" },
-  ];
 
   return (
     <section
@@ -388,49 +382,6 @@ export function Hero() {
           </div>
         </div>
 
-        {/* Stats Bar */}
-        <div
-          className={mounted ? "animate-fade-in-up delay-500" : ""}
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(4, 1fr)",
-            gap: 24,
-            marginTop: 80,
-            opacity: mounted ? undefined : 0,
-          }}
-        >
-          {stats.map((stat, i) => (
-            <div
-              key={stat.label}
-              className="card-3d"
-              style={{
-                padding: "24px 20px",
-                textAlign: "center",
-              }}
-            >
-              <div
-                className="text-gradient"
-                style={{
-                  fontSize: "2rem",
-                  fontWeight: 800,
-                  fontFamily: "var(--font-display)",
-                  marginBottom: 4,
-                }}
-              >
-                {stat.value}
-              </div>
-              <div
-                style={{
-                  fontSize: "0.85rem",
-                  color: "var(--text-muted)",
-                  fontWeight: 500,
-                }}
-              >
-                {stat.label}
-              </div>
-            </div>
-          ))}
-        </div>
 
         {/* Scroll Indicator */}
         <div
