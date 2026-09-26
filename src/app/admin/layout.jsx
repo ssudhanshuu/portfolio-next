@@ -10,7 +10,7 @@ export default function AdminLayout({ children }) {
         <header className="h-20 w-full bg-[#0a0a0f] border-b border-[#22222f] flex items-center justify-center px-4 md:px-12 lg:px-16 sticky top-0 z-40">
           <div className="w-full max-w-6xl mx-auto flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-600 to-pink-500 flex items-center justify-center shadow-lg shadow-purple-500/30">
+              <div className="w-10 h-10 rounded-xl bg-linear-to-br from-purple-600 to-pink-500 flex items-center justify-center shadow-lg shadow-purple-500/30">
                 <span className="text-white font-bold text-xl">M</span>
               </div>
               <h2 className="text-2xl font-bold text-white tracking-wide hidden sm:block">Admin</h2>
@@ -31,15 +31,15 @@ export default function AdminLayout({ children }) {
           </div>
         </header>
 
-        <div className="w-full max-w-[1160px] mx-auto flex flex-col md:flex-row gap-10 px-4">
+        <div className="w-full max-w-290 mx-auto flex flex-col md:flex-row gap-10 px-4">
 
           {/* Left */}
-          <div className="w-full md:w-[397px] flex-shrink-0">
+          <div className="w-full md:w-99.25 shrink-0">
             <AdminSidebar />
           </div>
 
           {/* Right */}
-          <main className="w-full md:w-[795px] flex-shrink-0">
+          <main className="w-full md:w-198.75 shrink-0">
             {children}
           </main>
 
