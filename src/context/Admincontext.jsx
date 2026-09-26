@@ -2,6 +2,7 @@
 
 import { createContext, useState } from "react";
 
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "";
 
 export const AdminContext = createContext();
 
@@ -22,7 +23,7 @@ export const AdminProvider = ({ children }) => {
   };
 
   const fetchSkills = async (category) => {
-    await fetchData("http://localhost:3000/api/skills", (data) => {
+    await fetchData(`${BASE_URL}/api/skills`, (data) => {
       setSkills(Array.isArray(data) ? data : []);
     });
   };
@@ -31,7 +32,7 @@ export const AdminProvider = ({ children }) => {
 
   const fetchProjects = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/projects");
+      const response = await fetch(`${BASE_URL}/api/projects`);
       const data = await response.json();
 
       if (data.success) {
@@ -45,7 +46,7 @@ export const AdminProvider = ({ children }) => {
 
   const fetchProjectswithid = async (projectId) => {
     try {
-      const response = await fetch(`http://localhost:3000/api/projects/${projectId}`);
+      const response = await fetch(`${BASE_URL}/api/projects/${projectId}`);
       const data = await response.json();
 
       if (data.success) {
@@ -60,7 +61,7 @@ export const AdminProvider = ({ children }) => {
 
   const fetchblogs = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/blogs");
+      const response = await fetch(`${BASE_URL}/api/blogs`);
       const data = await response.json();
 
       if (data.success) {
@@ -74,7 +75,7 @@ export const AdminProvider = ({ children }) => {
 
   const fetchblogswithid = async (projectId) => {
     try {
-      const response = await fetch(`http://localhost:3000/api/projects/${bolgId}`);
+      const response = await fetch(`${BASE_URL}/api/projects/${bolgId}`);
       const data = await response.json();
 
       if (data.success) {

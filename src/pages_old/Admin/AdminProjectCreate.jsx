@@ -4,6 +4,7 @@ import { AdminContext } from "../../context/AdminContext";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "";
 
 const Card = ({ children }) => (
   <div className="border rounded-xl shadow-md bg-white">{children}</div>
@@ -22,7 +23,7 @@ const ImageWithFallback = ({ src, alt, className }) => (
   <img
     src={
       src
-        ? `http://localhost:3000${src}`
+        ? `${BASE_URL}${src}`
         : "https://dummyimage.com/300x200/cccccc/000000.jpg&text=No+Image"
     }
     alt={alt}

@@ -3,6 +3,8 @@ import axios from "axios";
 import AdminSidebar from "./AdminSidebar";
 import { useNavigate } from "react-router-dom";
 
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "";
+
 const AdminCreateSkills = () => {
   const [formData, setFormData] = useState({
     category: "",
@@ -24,7 +26,7 @@ const AdminCreateSkills = () => {
     navigator("/admin/skills");
 
     try {
-      const res = await axios.post("http://localhost:3000/api/skills/create", formData);
+      const res = await axios.post(`${BASE_URL}/api/skills/create`, formData);
       setMessage("✅ Skill added successfully!");
       setFormData({ category: "", name: "", proficiency: "", year: "" });
       console.log("Response:", res.data);
