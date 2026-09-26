@@ -37,8 +37,8 @@ export default function RootLayout({ children }) {
       <body className="min-h-screen">
         <ToastProvider />
         <div className="particles-bg" />
-        <div className="grid-bg" style={{ position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none" }} />
-        <div style={{ position: "relative", zIndex: 1 }}>{children}</div>
+        <div className="grid-bg" />
+        <div className="page-content">{children}</div>
       </body>
     </html>
   );

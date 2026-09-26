@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Calendar, Clock, ArrowRight } from "lucide-react";
 import Tilt from "react-parallax-tilt";
 
@@ -159,8 +159,8 @@ export default function Blogs() {
                       {blog.category === "React"
                         ? "⚛️"
                         : blog.category === "CSS"
-                        ? "🎨"
-                        : "🟢"}
+                          ? "🎨"
+                          : "🟢"}
                     </span>
                     <span
                       style={{

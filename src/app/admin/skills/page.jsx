@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import { Plus } from "lucide-react";
 import { AdminContext } from "@/context/Admincontext";

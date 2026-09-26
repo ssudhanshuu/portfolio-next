@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import AdminSidebar from "./AdminSidebar";
 import { Plus } from "lucide-react";
 import { AdminContext } from "../../context/Admincontext";
@@ -72,8 +72,8 @@ function AdminSkill() {
           <button
             onClick={() => setSelectedCategory("")}
             className={`px-5 py-2 rounded-lg font-medium transition-all ${selectedCategory === ""
-                ? "bg-blue-600 text-white shadow"
-                : "bg-white dark:bg-gray-800 border hover:bg-gray-100 dark:hover:bg-gray-700"
+              ? "bg-blue-600 text-white shadow"
+              : "bg-white dark:bg-gray-800 border hover:bg-gray-100 dark:hover:bg-gray-700"
               }`}
           >
             All
@@ -83,8 +83,8 @@ function AdminSkill() {
               key={cat}
               onClick={() => setSelectedCategory(cat)}
               className={`px-5 py-2 rounded-lg font-medium transition-all ${selectedCategory === cat
-                  ? "bg-blue-600 text-white shadow"
-                  : "bg-white dark:bg-gray-800 border hover:bg-gray-100 dark:hover:bg-gray-700"
+                ? "bg-blue-600 text-white shadow"
+                : "bg-white dark:bg-gray-800 border hover:bg-gray-100 dark:hover:bg-gray-700"
                 }`}
             >
               {cat}

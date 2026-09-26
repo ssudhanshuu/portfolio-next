@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import dbConnect from "@/lib/db";
 import Blog from "@/models/Blog";
-import { uploadToCloudinary } from "@/lib/cloudinary";
+import { uploadFormFile } from "@/lib/cloudinary";
 
 export async function GET() {
   try {
@@ -18,7 +18,7 @@ export async function POST(req) {
   try {
     await dbConnect();
     const formData = await req.formData();
-    
+
     const name = formData.get("name");
     const tagline = formData.get("tagline");
     const description = formData.get("description");
@@ -37,31 +37,16 @@ export async function POST(req) {
       );
     }
 
-    const techArray = typeof technologies === "string" 
-      ? technologies.split(",").map((t) => t.trim()) 
+    const techArray = typeof technologies === "string"
+      ? technologies.split(",").map((t) => t.trim())
       : [];
 
-    // Upload main image to Cloudinary
-    let mainImageUrl = null;
-    const imageFile = formData.get("image");
-    
-    if (imageFile && imageFile.name) {
-      const buffer = Buffer.from(await imageFile.arrayBuffer());
-      const result = await uploadToCloudinary(buffer, "portfolio/blogs");
-      mainImageUrl = result.secure_url;
-    }
+    const mainImageUrl = await uploadFormFile(formData.get("image"), "portfolio/blogs");
+    const screenshotUrls = [];
 
-    // Upload screenshots to Cloudinary
-    let screenshotUrls = [];
-    const screenshotFiles = formData.getAll("screenshots");
-    if (screenshotFiles && screenshotFiles.length > 0) {
-      for (const file of screenshotFiles) {
-        if (file && file.name) {
-          const buffer = Buffer.from(await file.arrayBuffer());
-          const result = await uploadToCloudinary(buffer, "portfolio/blogs/screenshots");
-          screenshotUrls.push(result.secure_url);
-        }
-      }
+    for (const file of formData.getAll("screenshots")) {
+      const imageUrl = await uploadFormFile(file, "portfolio/blogs/screenshots");
+      if (imageUrl) screenshotUrls.push(imageUrl);
     }
 
     const blog = await Blog.create({

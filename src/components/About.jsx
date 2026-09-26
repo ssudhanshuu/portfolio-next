@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { CheckCircle, Code2, Users, Award, Coffee } from "lucide-react";
 import Tilt from "react-parallax-tilt";
 

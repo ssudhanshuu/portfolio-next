@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { cloneElement, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -38,14 +38,13 @@ const AdminSidebar = () => {
                 <Link
                   key={link.name}
                   href={link.path}
-                  className={`flex items-center gap-4 p-4 rounded-2xl transition-all duration-300 ${
-                    isActive 
-                      ? "bg-[#13131a] border border-purple-500/40 shadow-[0_0_15px_rgba(124,58,237,0.15)]" 
+                  className={`flex items-center gap-4 p-4 rounded-2xl transition-all duration-300 ${isActive
+                      ? "bg-[#13131a] border border-purple-500/40 shadow-[0_0_15px_rgba(124,58,237,0.15)]"
                       : "bg-[#13131a] border border-[#22222f] hover:border-purple-500/30"
-                  }`}
+                    }`}
                 >
                   <div className={`w-12 h-12 rounded-xl flex items-center justify-center border ${isActive ? "bg-[#0a0a0f] border-purple-500/30 text-purple-400" : "bg-[#0a0a0f] border-[#22222f] text-[#71717a]"}`}>
-                    {React.cloneElement(link.icon, { className: "w-5 h-5" })}
+                    {cloneElement(link.icon, { className: "w-5 h-5" })}
                   </div>
                   <div className="flex flex-col">
                     <span className="text-[10px] font-bold text-[#71717a] uppercase tracking-widest mb-0.5">Navigation</span>

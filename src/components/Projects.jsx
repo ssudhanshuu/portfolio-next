@@ -1,13 +1,42 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { ExternalLink } from "lucide-react";
+import { useState, useEffect } from "react";
+import Image from "next/image";
+import { ChevronDown, ChevronUp, ExternalLink } from "lucide-react";
 import { FaGithub } from "react-icons/fa";
 import Tilt from "react-parallax-tilt";
+
+function getExternalUrl(value) {
+  if (typeof value !== "string" || !value.trim()) return "";
+
+  try {
+    const url = new URL(value.trim());
+    return ["http:", "https:"].includes(url.protocol) ? url.href : "";
+  } catch {
+    try {
+      return new URL(`https://${value.trim()}`).href;
+    } catch {
+      return "";
+    }
+  }
+}
 
 export default function Projects() {
   const [filter, setFilter] = useState("");
   const [projects, setProjects] = useState([]);
+  const [expandedDescriptions, setExpandedDescriptions] = useState(() => new Set());
+
+  const toggleDescription = (projectId) => {
+    setExpandedDescriptions((expanded) => {
+      const nextExpanded = new Set(expanded);
+      if (nextExpanded.has(projectId)) {
+        nextExpanded.delete(projectId);
+      } else {
+        nextExpanded.add(projectId);
+      }
+      return nextExpanded;
+    });
+  };
 
   useEffect(() => {
     fetch("/api/public/projects")
@@ -117,6 +146,10 @@ export default function Projects() {
         >
           {filtered.map((project, idx) => {
             const statusStyle = getStatusStyle(project.status);
+            const liveDemoUrl = getExternalUrl(project.liveDemo);
+            const githubUrl = getExternalUrl(project.github);
+            const isDescriptionExpanded = expandedDescriptions.has(project.id);
+            const hasLongDescription = project.description?.length > 120;
             return (
               <Tilt
                 key={project.id}
@@ -128,7 +161,7 @@ export default function Projects() {
                 scale={1.01}
               >
                 <div
-                  className="card-3d"
+                  className="card-3d project-card"
                   style={{
                     overflow: "hidden",
                     animation: `fade-in-up 0.5s ease forwards`,
@@ -136,15 +169,24 @@ export default function Projects() {
                     opacity: 0,
                   }}
                 >
-                  {/* Card Header - gradient bar */}
-                  <div
-                    style={{
-                      height: 4,
-                      background: "var(--gradient-1)",
-                    }}
-                  />
+                  <div className="project-card-image-wrap">
+                    {project.image ? (
+                      <Image
+                        src={project.image}
+                        alt={`${project.name} project preview`}
+                        fill
+                        sizes="(max-width: 640px) 100vw, (max-width: 1100px) 50vw, 360px"
+                        unoptimized
+                        className="project-card-image"
+                      />
+                    ) : (
+                      <div className="project-card-image-placeholder" aria-hidden="true">
+                        {project.name?.charAt(0) || "P"}
+                      </div>
+                    )}
+                  </div>
 
-                  <div style={{ padding: 28 }}>
+                  <div className="project-card-body" style={{ padding: 28 }}>
                     {/* Title & Status */}
                     <div
                       style={{
@@ -181,15 +223,31 @@ export default function Projects() {
 
                     {/* Description */}
                     <p
+                      className={`project-description ${isDescriptionExpanded ? "is-expanded" : ""}`}
                       style={{
                         fontSize: "0.9rem",
                         color: "var(--text-secondary)",
                         lineHeight: 1.6,
-                        marginBottom: 20,
+                        marginBottom: hasLongDescription ? 6 : 20,
                       }}
                     >
                       {project.description}
                     </p>
+                    {hasLongDescription && (
+                      <button
+                        type="button"
+                        className="project-read-more"
+                        aria-expanded={isDescriptionExpanded}
+                        onClick={() => toggleDescription(project.id)}
+                      >
+                        {isDescriptionExpanded ? "Show less" : "Read more"}
+                        {isDescriptionExpanded ? (
+                          <ChevronUp size={14} aria-hidden="true" />
+                        ) : (
+                          <ChevronDown size={14} aria-hidden="true" />
+                        )}
+                      </button>
+                    )}
 
                     {/* Tech Stack */}
                     <div
@@ -219,31 +277,45 @@ export default function Projects() {
                     </div>
 
                     {/* Action Buttons */}
-                    <div style={{ display: "flex", gap: 10 }}>
-                      <button
+                    <div className="project-card-actions" style={{ display: "flex", gap: 10 }}>
+                      <a
+                        href={liveDemoUrl || undefined}
+                        target={liveDemoUrl ? "_blank" : undefined}
+                        rel={liveDemoUrl ? "noopener noreferrer" : undefined}
+                        aria-disabled={!liveDemoUrl}
+                        tabIndex={liveDemoUrl ? 0 : -1}
                         className="btn-primary"
                         style={{
                           padding: "8px 18px",
                           fontSize: "0.82rem",
                           flex: 1,
                           justifyContent: "center",
+                          opacity: liveDemoUrl ? 1 : 0.5,
+                          cursor: liveDemoUrl ? "pointer" : "not-allowed",
                         }}
                       >
                         <ExternalLink size={15} />
                         Live Demo
-                      </button>
-                      <button
+                      </a>
+                      <a
+                        href={githubUrl || undefined}
+                        target={githubUrl ? "_blank" : undefined}
+                        rel={githubUrl ? "noopener noreferrer" : undefined}
+                        aria-disabled={!githubUrl}
+                        tabIndex={githubUrl ? 0 : -1}
                         className="btn-outline"
                         style={{
                           padding: "8px 18px",
                           fontSize: "0.82rem",
                           flex: 1,
                           justifyContent: "center",
+                          opacity: githubUrl ? 1 : 0.5,
+                          cursor: githubUrl ? "pointer" : "not-allowed",
                         }}
                       >
                         <FaGithub size={15} />
                         Code
-                      </button>
+                      </a>
                     </div>
                   </div>
                 </div>

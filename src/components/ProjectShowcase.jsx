@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useContext } from "react";
+import { useEffect, useContext } from "react";
 import { AdminContext } from "../context/AdminContext";
 import { useParams } from "react-router-dom";
 
@@ -73,7 +73,7 @@ const ProjectsPage = () => {
                 </ul>
               </div>
             )}
-             <h1 className="text-2xl font-bold mb-4">Project Gallery</h1>
+            <h1 className="text-2xl font-bold mb-4">Project Gallery</h1>
             {/* Screenshots */}
             {project.screenshots?.length > 0 && (
               <div className="mb-4">

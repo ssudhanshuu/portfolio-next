@@ -32,6 +32,14 @@ export async function uploadToCloudinary(buffer, folder = "portfolio") {
   });
 }
 
+export async function uploadFormFile(file, folder) {
+  if (!file?.name) return null;
+
+  const buffer = Buffer.from(await file.arrayBuffer());
+  const result = await uploadToCloudinary(buffer, folder);
+  return result.secure_url;
+}
+
 /**
  * Delete an image from Cloudinary by its public_id
  * @param {string} publicId - The Cloudinary public_id

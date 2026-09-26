@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useState } from "react";
+import { createContext, useState } from "react";
 
 
 export const AdminContext = createContext();
@@ -65,7 +65,7 @@ export const AdminProvider = ({ children }) => {
 
       if (data.success) {
 
-        setblogs(data.data);
+        setBlogs(data.data);
       }
     } catch (error) {
       console.error("Data not fetched:", error);
@@ -79,7 +79,7 @@ export const AdminProvider = ({ children }) => {
 
       if (data.success) {
 
-        setblogs(data.data);
+        setBlogs(data.data);
       }
     } catch (error) {
       console.error("Data not fetched:", error);

@@ -1,17 +1,20 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { Menu, X } from "lucide-react";
+import { useState, useEffect } from "react";
+import { ArrowUpRight, Menu, X } from "lucide-react";
 
 const navItems = [
-  { label: "Home", href: "#home" },
-  { label: "About", href: "#about" },
-  { label: "Skills", href: "#skills" },
-  { label: "Projects", href: "#projects" },
-  { label: "Blog", href: "#blog" },
-  { label: "Testimonials", href: "#testimonials" },
-  { label: "Contact", href: "#contact" },
+  { label: "Home", href: "#home", id: "home" },
+  { label: "About", href: "#about", id: "about" },
+  { label: "Skills", href: "#skills", id: "skills" },
+  { label: "Projects", href: "#projects", id: "projects" },
+  { label: "Blog", href: "#blog", id: "blog" },
+  { label: "Testimonials", href: "#testimonials", id: "testimonials" },
+  { label: "Contact", href: "#contact", id: "contact" },
 ];
+const headerNavItems = navItems.filter(
+  (item) => item.id !== "home" && item.id !== "contact"
+);
 
 function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -23,7 +26,7 @@ function Navbar() {
       setScrolled(window.scrollY > 20);
 
       // Detect active section
-      const sections = navItems.map((item) => item.href.replace("#", ""));
+      const sections = navItems.map((item) => item.id);
       for (let i = sections.length - 1; i >= 0; i--) {
         const el = document.getElementById(sections[i]);
         if (el) {
@@ -39,11 +42,10 @@ function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleNavClick = (e, href) => {
+  const handleNavClick = (e, sectionId) => {
     e.preventDefault();
     setMobileMenuOpen(false);
-    const id = href.replace("#", "");
-    const el = document.getElementById(id);
+    const el = document.getElementById(sectionId);
     if (el) {
       const top = el.getBoundingClientRect().top + window.pageYOffset - 80;
       window.scrollTo({ top, behavior: "smooth" });
@@ -51,202 +53,77 @@ function Navbar() {
   };
 
   return (
-    <header
-      id="navbar"
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        zIndex: 100,
-        transition: "all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
-        background: scrolled
-          ? "rgba(10, 10, 15, 0.85)"
-          : "rgba(10, 10, 15, 0.4)",
-        backdropFilter: "blur(20px)",
-        WebkitBackdropFilter: "blur(20px)",
-        borderBottom: scrolled
-          ? "1px solid rgba(124, 58, 237, 0.15)"
-          : "1px solid transparent",
-        boxShadow: scrolled
-          ? "0 4px 30px rgba(0, 0, 0, 0.3)"
-          : "none",
-      }}
-    >
-      <div
-        style={{
-          maxWidth: 1280,
-          margin: "0 auto",
-          padding: "0 1.5rem",
-          height: 72,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        {/* Logo */}
+    <header id="navbar" className={`site-header ${scrolled ? "is-scrolled" : ""}`}>
+      <div className="site-header-inner">
         <a
           href="#home"
-          onClick={(e) => handleNavClick(e, "#home")}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 10,
-            textDecoration: "none",
-            color: "var(--text-primary)",
-          }}
+          onClick={(e) => handleNavClick(e, "home")}
+          className="site-brand"
         >
-          <div
-            style={{
-              width: 40,
-              height: 40,
-              borderRadius: "var(--radius-md)",
-              background: "var(--gradient-1)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontWeight: 800,
-              fontSize: "1.1rem",
-              color: "white",
-            }}
-          >
-            S
-          </div>
-          <span
-            style={{
-              fontFamily: "var(--font-display)",
-              fontWeight: 700,
-              fontSize: "1.25rem",
-              letterSpacing: "-0.5px",
-            }}
-          >
-            Sudhanshu
+          <span className="site-brand-mark">S</span>
+          <span className="site-brand-copy">
+            <strong>Sudhanshu</strong>
+            <small>Full Stack Developer</small>
           </span>
         </a>
 
-        {/* Desktop Nav */}
-        <nav
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-          }}
-          className="nav-desktop"
-        >
-          {navItems.map((item) => {
-            const isActive =
-              activeSection === item.href.replace("#", "");
+        <nav className="site-nav" aria-label="Main navigation">
+          {headerNavItems.map((item) => {
+            const isActive = activeSection === item.id;
             return (
               <a
                 key={item.label}
                 href={item.href}
-                onClick={(e) => handleNavClick(e, item.href)}
-                style={{
-                  padding: "8px 16px",
-                  borderRadius: "var(--radius-full)",
-                  fontSize: "0.9rem",
-                  fontWeight: 500,
-                  textDecoration: "none",
-                  transition: "all 0.3s ease",
-                  color: isActive
-                    ? "white"
-                    : "var(--text-secondary)",
-                  background: isActive
-                    ? "rgba(124, 58, 237, 0.2)"
-                    : "transparent",
-                  border: isActive
-                    ? "1px solid rgba(124, 58, 237, 0.3)"
-                    : "1px solid transparent",
-                }}
-                onMouseEnter={(e) => {
-                  if (!isActive) {
-                    e.target.style.color = "var(--accent-light)";
-                    e.target.style.background =
-                      "rgba(124, 58, 237, 0.08)";
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!isActive) {
-                    e.target.style.color = "var(--text-secondary)";
-                    e.target.style.background = "transparent";
-                  }
-                }}
+                onClick={(e) => handleNavClick(e, item.id)}
+                className={`site-nav-link ${isActive ? "is-active" : ""}`}
+                aria-current={isActive ? "location" : undefined}
               >
                 {item.label}
               </a>
             );
           })}
-
-          <a
-            href="#contact"
-            onClick={(e) => handleNavClick(e, "#contact")}
-            className="btn-primary"
-            style={{
-              marginLeft: 8,
-              padding: "8px 22px",
-              fontSize: "0.85rem",
-            }}
-          >
-            Hire Me
-          </a>
         </nav>
 
-        {/* Mobile Toggle */}
-        <button
-          onClick={() => setMobileMenuOpen((p) => !p)}
-          className="nav-mobile-toggle"
-          style={{
-            display: "none",
-            background: "rgba(124, 58, 237, 0.15)",
-            border: "1px solid rgba(124, 58, 237, 0.3)",
-            borderRadius: "var(--radius-md)",
-            padding: 8,
-            color: "var(--accent-light)",
-            cursor: "pointer",
-          }}
-          aria-label="Toggle menu"
-        >
-          {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
-        </button>
+        <div className="site-header-actions">
+          <div className="site-availability">
+            <span className="site-availability-dot" />
+            <span>Available Q4 2026</span>
+          </div>
+          <a
+            href="#contact"
+            onClick={(e) => handleNavClick(e, "contact")}
+            className="site-cta"
+          >
+            Let&apos;s talk
+            <ArrowUpRight size={15} aria-hidden="true" />
+          </a>
+
+          <button
+            onClick={() => setMobileMenuOpen((p) => !p)}
+            className="site-menu-toggle"
+            aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-navigation"
+          >
+            {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
+        </div>
       </div>
 
-      {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div
-          className="nav-mobile-menu"
-          style={{
-            background: "rgba(10, 10, 15, 0.95)",
-            backdropFilter: "blur(20px)",
-            borderTop: "1px solid var(--border-color)",
-            padding: "1rem 1.5rem 1.5rem",
-            display: "flex",
-            flexDirection: "column",
-            gap: 4,
-          }}
+        <nav
+          className="site-mobile-menu"
+          id="mobile-navigation"
+          aria-label="Mobile navigation"
         >
-          {navItems.map((item) => {
-            const isActive =
-              activeSection === item.href.replace("#", "");
+          {headerNavItems.map((item) => {
+            const isActive = activeSection === item.id;
             return (
               <a
                 key={item.label}
                 href={item.href}
-                onClick={(e) => handleNavClick(e, item.href)}
-                style={{
-                  padding: "12px 16px",
-                  borderRadius: "var(--radius-md)",
-                  fontSize: "1rem",
-                  fontWeight: 500,
-                  textDecoration: "none",
-                  color: isActive ? "white" : "var(--text-secondary)",
-                  background: isActive
-                    ? "rgba(124, 58, 237, 0.15)"
-                    : "transparent",
-                  borderLeft: isActive
-                    ? "3px solid var(--accent)"
-                    : "3px solid transparent",
-                  transition: "all 0.2s ease",
-                }}
+                onClick={(e) => handleNavClick(e, item.id)}
+                className={`site-mobile-link ${isActive ? "is-active" : ""}`}
               >
                 {item.label}
               </a>
@@ -254,29 +131,14 @@ function Navbar() {
           })}
           <a
             href="#contact"
-            onClick={(e) => handleNavClick(e, "#contact")}
-            className="btn-primary"
-            style={{
-              marginTop: 8,
-              justifyContent: "center",
-              fontSize: "0.95rem",
-            }}
+            onClick={(e) => handleNavClick(e, "contact")}
+            className="site-cta site-mobile-cta"
           >
-            Hire Me
+            Let&apos;s talk
+            <ArrowUpRight size={15} aria-hidden="true" />
           </a>
-        </div>
+        </nav>
       )}
-
-      <style jsx>{`
-        @media (min-width: 769px) {
-          .nav-mobile-toggle { display: none !important; }
-          .nav-desktop { display: flex !important; }
-        }
-        @media (max-width: 768px) {
-          .nav-mobile-toggle { display: flex !important; }
-          .nav-desktop { display: none !important; }
-        }
-      `}</style>
     </header>
   );
 }

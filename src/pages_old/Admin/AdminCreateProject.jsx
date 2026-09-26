@@ -1,9 +1,9 @@
 // src/pages/admin/CreateProjectForm.jsx
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 
-const BASE_URL =   "http://localhost:3000";
+const BASE_URL = "http://localhost:3000";
 
 export default function CreateProjectForm() {
   const navigate = useNavigate();
@@ -17,7 +17,7 @@ export default function CreateProjectForm() {
     category: "",
     liveDemo: "",
     github: "",
-    technologies: "" 
+    technologies: ""
   });
 
   // main image (single) and screenshots (multiple)
@@ -136,9 +136,9 @@ export default function CreateProjectForm() {
 
       if (res.ok && data.success) {
         setMessage("✅ Project created successfully!");
-        
+
         clearForm();
-     
+
         setTimeout(() => {
           navigate("/admin/projects-create");
         }, 1000);
@@ -161,11 +161,10 @@ export default function CreateProjectForm() {
 
       {message && (
         <div
-          className={`mb-4 p-3 rounded ${
-            message.startsWith("✅")
+          className={`mb-4 p-3 rounded ${message.startsWith("✅")
               ? "bg-green-100 text-green-800"
               : "bg-red-100 text-red-800"
-          }`}
+            }`}
         >
           {message}
         </div>

@@ -1,5 +1,5 @@
 // src/pages/admin/CreateblogForm.jsx
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 
@@ -162,8 +162,8 @@ export default function CreateblogForm() {
       {message && (
         <div
           className={`mb-4 p-3 rounded ${message.startsWith("✅")
-              ? "bg-green-100 text-green-800"
-              : "bg-red-100 text-red-800"
+            ? "bg-green-100 text-green-800"
+            : "bg-red-100 text-red-800"
             }`}
         >
           {message}

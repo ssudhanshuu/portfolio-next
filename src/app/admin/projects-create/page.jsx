@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import { AdminContext } from "@/context/Admincontext";
 import { Plus } from "lucide-react";
@@ -179,7 +179,7 @@ export default function AdminProjectCreate() {
         ) : (
           <div className="col-span-full text-center py-20 bg-[#1e1e2d] rounded-xl border border-[#2b2b40]">
             <h3 className="text-lg font-medium text-white">No projects found</h3>
-            <p className="text-sm mt-2 text-[#92929f]">Click "Add Project" to create your first one.</p>
+            <p className="text-sm mt-2 text-[#92929f]">Click &quot;Add Project&quot; to create your first one.</p>
           </div>
         )}
       </div>

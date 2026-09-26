@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import { useContext, useEffect } from "react";
 import AdminSidebar from "./AdminSidebar";
 import { AdminContext } from "../../context/AdminContext";
 import { Plus } from "lucide-react";
@@ -23,7 +23,7 @@ const ImageWithFallback = ({ src, alt, className }) => (
     src={
       src
         ? `http://localhost:3000${src}`
-        : "https://dummyimage.com/300x200/cccccc/000000.jpg&text=No+Image" 
+        : "https://dummyimage.com/300x200/cccccc/000000.jpg&text=No+Image"
     }
     alt={alt}
     className={className}
@@ -32,10 +32,10 @@ const ImageWithFallback = ({ src, alt, className }) => (
 
 
 export default function AdminProjectCreate() {
- let navigate = useNavigate()
+  let navigate = useNavigate()
   const { projects, fetchProjects } = useContext(AdminContext);
   const Addhandler = () => {
-   
+
     navigate("/admin/create");
   };
 

@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import { Mail, Phone, MapPin, Send, Loader2 } from "lucide-react";
+import { useState } from "react";
+import { Mail, Phone, MapPin, Send, Loader2, UserRoundPen } from "lucide-react";
 import { toast } from "react-toastify";
 
 export default function Contact() {
@@ -123,10 +123,15 @@ export default function Contact() {
       href: "tel:+918191087255",
     },
     {
+      icon: UserRoundPen,
+      label: "Destination",
+      value: "MERN DEVLOPER"
+    },
+    {
       icon: MapPin,
       label: "Location",
-      value: "MERN Developer",
-      href: null,
+      value: "817, Urban Estate, Sector 4, Gurugram, Haryana 122006",
+      href: "https://www.google.com/maps/search/?api=1&query=817%20Urban%20Estate%20Sector%204%20Gurugram%20Haryana%20122006",
     },
   ];
 
