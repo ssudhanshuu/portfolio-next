@@ -20,15 +20,8 @@ export async function POST(req) {
     const formData = await req.formData();
 
     const name = formData.get("name");
-    const tagline = formData.get("tagline");
     const description = formData.get("description");
-    const technologies = formData.get("technologies");
     const category = formData.get("category");
-    const role = formData.get("role");
-    const duration = formData.get("duration");
-    const status = formData.get("status");
-    const liveDemo = formData.get("liveDemo");
-    const github = formData.get("github");
 
     if (!name || !description || !category) {
       return NextResponse.json(
@@ -37,31 +30,13 @@ export async function POST(req) {
       );
     }
 
-    const techArray = typeof technologies === "string"
-      ? technologies.split(",").map((t) => t.trim())
-      : [];
-
     const mainImageUrl = await uploadFormFile(formData.get("image"), "portfolio/blogs");
-    const screenshotUrls = [];
-
-    for (const file of formData.getAll("screenshots")) {
-      const imageUrl = await uploadFormFile(file, "portfolio/blogs/screenshots");
-      if (imageUrl) screenshotUrls.push(imageUrl);
-    }
 
     const blog = await Blog.create({
       name,
-      tagline,
       description,
-      technologies: techArray,
       category,
-      role,
-      duration,
-      status,
-      liveDemo,
-      github,
       image: mainImageUrl,
-      screenshots: screenshotUrls,
     });
 
     return NextResponse.json({ success: true, message: "Blog created successfully!", data: blog }, { status: 201 });

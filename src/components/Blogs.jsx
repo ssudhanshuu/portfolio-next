@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Calendar, Clock, ArrowRight } from "lucide-react";
+import Image from "next/image";
+import { Calendar, Clock, ArrowRight, X } from "lucide-react";
 import Tilt from "react-parallax-tilt";
 
 const gradients = [
@@ -12,28 +13,57 @@ const gradients = [
   "linear-gradient(135deg, #06b6d4, #3b82f6)",
 ];
 
+function getReadingTime(text) {
+  const wordCount = text.trim().split(/\s+/).filter(Boolean).length;
+  const minutes = Math.max(1, Math.ceil(wordCount / 200));
+  return `${minutes} min read`;
+}
+
 export default function Blogs() {
   const [filter, setFilter] = useState("All");
   const [blogs, setBlogs] = useState([]);
+  const [selectedBlog, setSelectedBlog] = useState(null);
 
   useEffect(() => {
     fetch("/api/public/blogs")
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {
-          setBlogs(data.map((b, i) => ({
-            id: b._id,
-            title: b.name,
-            description: b.description || b.tagline,
-            category: b.category,
-            date: b.createdAt ? new Date(b.createdAt).toISOString().split("T")[0] : "2025-09-01",
-            readTime: "5 min read",
-            gradient: gradients[i % gradients.length],
-          })));
+          setBlogs(data.map((blog, index) => {
+            const description = blog.description || blog.tagline || "";
+            return {
+              id: blog._id,
+              title: blog.name,
+              description,
+              category: blog.category,
+              image: blog.image,
+              date: blog.createdAt
+                ? new Date(blog.createdAt).toISOString().split("T")[0]
+                : "2025-09-01",
+              readTime: getReadingTime(description),
+              gradient: gradients[index % gradients.length],
+            };
+          }));
         }
       })
       .catch((err) => console.error("Error fetching blogs:", err));
   }, []);
+
+  useEffect(() => {
+    if (!selectedBlog) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") setSelectedBlog(null);
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [selectedBlog]);
 
   const categories = ["All", ...new Set(blogs.map((b) => b.category))];
 
@@ -149,19 +179,28 @@ export default function Blogs() {
                       justifyContent: "center",
                       position: "relative",
                     }}
+                    className="blog-cover"
                   >
-                    <span
-                      style={{
-                        fontSize: "3rem",
-                        filter: "drop-shadow(0 4px 12px rgba(0,0,0,0.3))",
-                      }}
-                    >
-                      {blog.category === "React"
-                        ? "⚛️"
-                        : blog.category === "CSS"
-                          ? "🎨"
-                          : "🟢"}
-                    </span>
+                    {blog.image ? (
+                      <>
+                        <Image
+                          src={blog.image}
+                          alt={`${blog.title} cover`}
+                          fill
+                          sizes="(max-width: 640px) 100vw, 340px"
+                          className="blog-cover-image"
+                        />
+                        <div className="blog-cover-overlay" />
+                      </>
+                    ) : (
+                      <span className="blog-cover-fallback" aria-hidden="true">
+                        {blog.category === "React"
+                          ? "⚛️"
+                          : blog.category === "CSS"
+                            ? "🎨"
+                            : "🟢"}
+                      </span>
+                    )}
                     <span
                       style={{
                         position: "absolute",
@@ -202,6 +241,7 @@ export default function Blogs() {
                     </h3>
 
                     <p
+                      className="blog-description-preview"
                       style={{
                         fontSize: "0.88rem",
                         color: "var(--text-secondary)",
@@ -253,20 +293,10 @@ export default function Blogs() {
                         </span>
                       </div>
                       <button
-                        style={{
-                          background: "none",
-                          border: "none",
-                          color: "var(--accent-light)",
-                          cursor: "pointer",
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 4,
-                          fontSize: "0.85rem",
-                          fontWeight: 600,
-                          transition: "gap 0.3s ease",
-                        }}
-                        onMouseEnter={(e) => (e.currentTarget.style.gap = "8px")}
-                        onMouseLeave={(e) => (e.currentTarget.style.gap = "4px")}
+                        type="button"
+                        className="blog-read-more"
+                        onClick={() => setSelectedBlog(blog)}
+                        aria-haspopup="dialog"
                       >
                         Read More <ArrowRight size={16} />
                       </button>
@@ -278,6 +308,40 @@ export default function Blogs() {
           </div>
         )}
       </div>
+
+      {selectedBlog && (
+        <div
+          className="blog-modal-backdrop"
+          onMouseDown={() => setSelectedBlog(null)}
+        >
+          <article
+            className="blog-modal-card"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="blog-modal-title"
+            onMouseDown={(event) => event.stopPropagation()}
+          >
+            <div className="blog-modal-topline">
+              <span className="blog-modal-category">{selectedBlog.category}</span>
+              <button
+                type="button"
+                className="blog-modal-close"
+                onClick={() => setSelectedBlog(null)}
+                aria-label="Close article"
+              >
+                <X size={18} />
+              </button>
+            </div>
+            <h2 id="blog-modal-title">{selectedBlog.title}</h2>
+            <div className="blog-modal-meta">
+              <span><Calendar size={14} /> {selectedBlog.date}</span>
+              <span><Clock size={14} /> {selectedBlog.readTime}</span>
+            </div>
+            <div className="blog-modal-divider" />
+            <div className="blog-modal-content">{selectedBlog.description}</div>
+          </article>
+        </div>
+      )}
 
       <style jsx>{`
         @media (max-width: 640px) {

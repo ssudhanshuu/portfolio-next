@@ -1,9 +1,12 @@
 "use client";
 
 import { CheckCircle, Code2, Users, Award, Coffee } from "lucide-react";
+import { useState } from "react";
 import Tilt from "react-parallax-tilt";
 
 export function About() {
+  const [expandedService, setExpandedService] = useState(null);
+
   const stats = [
     { icon: Code2, value: "5+", label: "Projects Completed", color: "#7c3aed" },
     { icon: Users, value: "Trusted", label: "Happy Clients", color: "#4ade80" },
@@ -25,21 +28,33 @@ export function About() {
       title: "Responsive Design",
       desc: "I make your website look perfect on any device, with layouts that adapt seamlessly across screens.",
       icon: "🎨",
+      deliverables: ["Responsive layouts", "Mobile optimization", "Cross-browser compatibility", "Performance optimization"],
+      technologies: ["React", "Tailwind CSS", "JavaScript"],
+      approach: "I start with real device and content needs, then build flexible layouts and test them across screen sizes and browsers.",
     },
     {
       title: "CMS Development",
       desc: "Set up user-friendly CMS solutions like WordPress or custom admin dashboards with ease.",
       icon: "⚙️",
+      deliverables: ["Content models and page setup", "Easy-to-use editing workflows", "Role-based admin access", "Deployment and handoff"],
+      technologies: ["WordPress", "Next.js", "MongoDB"],
+      approach: "I choose or build a CMS around the team's publishing workflow, then keep editing simple without limiting future growth.",
     },
     {
       title: "API Integrations",
       desc: "Seamless integration with third-party APIs and services, enhancing functionality and performance.",
       icon: "🔗",
+      deliverables: ["Third-party API connections", "Authentication and validation", "Error handling and retries", "Integration testing"],
+      technologies: ["Node.js", "Express", "REST APIs"],
+      approach: "I map the data flow first, protect credentials on the server, and handle failures so external services do not break the user experience.",
     },
     {
       title: "Website Redesign",
       desc: "Refresh outdated websites with modern, accessible designs that keep users engaged and coming back.",
       icon: "✨",
+      deliverables: ["Updated visual system", "Responsive page layouts", "Accessibility improvements", "Performance cleanup"],
+      technologies: ["Figma", "React", "CSS"],
+      approach: "I preserve what already works, identify usability issues, and refine the design in focused iterations before implementation.",
     },
   ];
 
@@ -174,78 +189,124 @@ export function About() {
               border: "1px solid var(--border-color)",
             }}
           >
-            {services.map((service, idx) => (
-              <div
-                key={service.title}
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "auto 1fr auto",
-                  gap: 20,
-                  alignItems: "center",
-                  padding: "24px 28px",
-                  background: "var(--bg-card)",
-                  borderBottom:
-                    idx < services.length - 1
-                      ? "1px solid var(--border-color)"
-                      : "none",
-                  cursor: "pointer",
-                  transition: "all 0.3s ease",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = "var(--bg-card-hover)";
-                  e.currentTarget.style.borderLeftColor = "var(--accent)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = "var(--bg-card)";
-                  e.currentTarget.style.borderLeftColor = "transparent";
-                }}
-              >
+            {services.map((service, idx) => {
+              const isExpanded = expandedService === service.title;
+              const toggleService = () =>
+                setExpandedService(isExpanded ? null : service.title);
+
+              return (
                 <div
+                  key={service.title}
+                  className="about-service-row"
+                  role="button"
+                  tabIndex={0}
+                  aria-expanded={isExpanded}
+                  aria-controls={`service-details-${idx}`}
+                  onClick={toggleService}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      toggleService();
+                    }
+                  }}
                   style={{
-                    width: 44,
-                    height: 44,
-                    borderRadius: "var(--radius-md)",
-                    background: "rgba(124, 58, 237, 0.1)",
-                    border: "1px solid rgba(124, 58, 237, 0.2)",
-                    display: "flex",
+                    display: "grid",
+                    gridTemplateColumns: "auto 1fr auto",
+                    gap: 20,
                     alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: "1.2rem",
+                    padding: "24px 28px",
+                    background: "var(--bg-card)",
+                    borderBottom:
+                      idx < services.length - 1
+                        ? "1px solid var(--border-color)"
+                        : "none",
+                    cursor: "pointer",
+                    transition: "all 0.3s ease",
+                  }}
+                  onMouseEnter={(event) => {
+                    event.currentTarget.style.background = "var(--bg-card-hover)";
+                    event.currentTarget.style.borderLeftColor = "var(--accent)";
+                  }}
+                  onMouseLeave={(event) => {
+                    event.currentTarget.style.background = "var(--bg-card)";
+                    event.currentTarget.style.borderLeftColor = "transparent";
                   }}
                 >
-                  {service.icon}
-                </div>
-                <div>
-                  <h4
+                  <div
                     style={{
-                      fontSize: "1rem",
-                      fontWeight: 600,
-                      marginBottom: 4,
+                      width: 44,
+                      height: 44,
+                      borderRadius: "var(--radius-md)",
+                      background: "rgba(124, 58, 237, 0.1)",
+                      border: "1px solid rgba(124, 58, 237, 0.2)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "1.2rem",
                     }}
                   >
-                    {service.title}
-                  </h4>
-                  <p
+                    {service.icon}
+                  </div>
+                  <div>
+                    <h4
+                      style={{
+                        fontSize: "1rem",
+                        fontWeight: 600,
+                        marginBottom: 4,
+                      }}
+                    >
+                      {service.title}
+                    </h4>
+                    <p
+                      style={{
+                        fontSize: "0.88rem",
+                        color: "var(--text-muted)",
+                        margin: 0,
+                        lineHeight: 1.5,
+                      }}
+                    >
+                      {service.desc}
+                    </p>
+                  </div>
+                  <div
+                    aria-hidden="true"
                     style={{
-                      fontSize: "0.88rem",
-                      color: "var(--text-muted)",
-                      margin: 0,
-                      lineHeight: 1.5,
+                      color: "var(--accent)",
+                      fontSize: "1.2rem",
                     }}
                   >
-                    {service.desc}
-                  </p>
+                    {isExpanded ? "↑" : "→"}
+                  </div>
+
+                  <div
+                    id={`service-details-${idx}`}
+                    className={`service-details ${isExpanded ? "is-expanded" : ""}`}
+                    aria-hidden={!isExpanded}
+                  >
+                    <div className="service-details-inner">
+                      <div className="service-details-content">
+                        <div>
+                          <h5>What I provide</h5>
+                          <ul>
+                            {service.deliverables.map((deliverable) => (
+                              <li key={deliverable}>{deliverable}</li>
+                            ))}
+                          </ul>
+                        </div>
+                        <div>
+                          <h5>Technologies</h5>
+                          <p>{service.technologies.join(" · ")}</p>
+                        </div>
+                        <div>
+                          <h5>How I work</h5>
+                          <p>{service.approach}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div
-                  style={{
-                    color: "var(--accent)",
-                    fontSize: "1.2rem",
-                  }}
-                >
-                  →
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>

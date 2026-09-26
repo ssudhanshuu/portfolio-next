@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import {
   HomeIcon,
   CalendarIcon,
+  ChatBubbleLeftRightIcon,
   TicketIcon,
   UsersIcon,
   Cog6ToothIcon,
@@ -20,6 +21,7 @@ const AdminSidebar = () => {
     { name: "Skills", path: "/admin/skills", icon: <Cog6ToothIcon className="w-5 h-5" /> },
     { name: "Projects", path: "/admin/projects-create", icon: <TicketIcon className="w-5 h-5" /> },
     { name: "Blogs", path: "/admin/blogs", icon: <CalendarIcon className="w-5 h-5" /> },
+    { name: "Testimonials", path: "/admin/testimonials", icon: <ChatBubbleLeftRightIcon className="w-5 h-5" /> },
     { name: "Contact", path: "/admin/contect", icon: <UsersIcon className="w-5 h-5" /> },
   ];
 
@@ -39,8 +41,8 @@ const AdminSidebar = () => {
                   key={link.name}
                   href={link.path}
                   className={`flex items-center gap-4 p-4 rounded-2xl transition-all duration-300 ${isActive
-                      ? "bg-[#13131a] border border-purple-500/40 shadow-[0_0_15px_rgba(124,58,237,0.15)]"
-                      : "bg-[#13131a] border border-[#22222f] hover:border-purple-500/30"
+                    ? "bg-[#13131a] border border-purple-500/40 shadow-[0_0_15px_rgba(124,58,237,0.15)]"
+                    : "bg-[#13131a] border border-[#22222f] hover:border-purple-500/30"
                     }`}
                 >
                   <div className={`w-12 h-12 rounded-xl flex items-center justify-center border ${isActive ? "bg-[#0a0a0f] border-purple-500/30 text-purple-400" : "bg-[#0a0a0f] border-[#22222f] text-[#71717a]"}`}>

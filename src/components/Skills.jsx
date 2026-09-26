@@ -34,7 +34,7 @@ export function Skills() {
   const overallStats = [
     { label: "Languages", count: "2+" },
     { label: "Frameworks", count: "2+" },
-    { label: "Databases", count: "1+" },
+    { label: "Databases", count: "2+" },
     { label: "Tools", count: "5+" },
   ];
 

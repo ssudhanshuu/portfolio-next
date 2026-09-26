@@ -1,40 +1,36 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { ChevronLeft, ChevronRight, Star, Quote } from "lucide-react";
 
 export default function Testimonials() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const [testimonials, setTestimonials] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const testimonials = [
-    {
-      name: "John Doe",
-      role: "CEO",
-      company: "TechCorp",
-      testimonial:
-        "Working with you was a fantastic experience! The project was delivered on time and exceeded our expectations.",
-      rating: 5,
-      projectName: "Website Redesign",
-    },
-    {
-      name: "Jane Smith",
-      role: "Founder",
-      company: "StartupX",
-      testimonial:
-        "Highly professional and skilled. Communication was smooth and results were amazing.",
-      rating: 5,
-      projectName: "Mobile App Development",
-    },
-    {
-      name: "David Johnson",
-      role: "Manager",
-      company: "BizWorks",
-      testimonial:
-        "Great attention to detail and commitment to quality. Highly recommended!",
-      rating: 4,
-    },
-  ];
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const loadTestimonials = async () => {
+      try {
+        const response = await fetch("/api/testimonials", { signal: controller.signal });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.message || "Unable to load testimonials.");
+        setTestimonials(Array.isArray(result.data) ? result.data : []);
+      } catch (error) {
+        if (error.name !== "AbortError") {
+          console.error("Error fetching testimonials:", error);
+        }
+      } finally {
+        if (!controller.signal.aborted) setLoading(false);
+      }
+    };
+
+    loadTestimonials();
+    return () => controller.abort();
+  }, []);
 
   useEffect(() => {
     if (!isAutoPlaying || testimonials.length <= 1) return;
@@ -56,11 +52,14 @@ export default function Testimonials() {
     );
 
   const current = testimonials[currentIndex];
+  const averageRating = testimonials.length
+    ? (testimonials.reduce((total, item) => total + item.rating, 0) / testimonials.length).toFixed(1)
+    : "0.0";
 
   const clientStats = [
-    { value: "10+", label: "Happy Clients" },
-    { value: "5+", label: "Projects Completed" },
-    { value: "5.0 ★", label: "Average Rating" },
+    { value: testimonials.length, label: "Client Testimonials" },
+    { value: `${averageRating} ★`, label: "Average Rating" },
+    { value: testimonials.filter((item) => item.rating === 5).length, label: "5-star Reviews" },
   ];
 
   return (
@@ -107,115 +106,134 @@ export default function Testimonials() {
           onMouseEnter={() => setIsAutoPlaying(false)}
           onMouseLeave={() => setIsAutoPlaying(true)}
         >
-          <div
-            className="card-3d"
-            style={{
-              padding: "48px 40px",
-              textAlign: "center",
-              position: "relative",
-              overflow: "hidden",
-            }}
-          >
-            {/* Quote icon */}
+          {current ? (
             <div
+              className="card-3d"
               style={{
-                position: "absolute",
-                top: 20,
-                left: 28,
-                color: "rgba(124, 58, 237, 0.15)",
-              }}
-            >
-              <Quote size={48} />
-            </div>
-
-            {/* Testimonial Text */}
-            <blockquote
-              style={{
-                fontSize: "1.15rem",
-                color: "var(--text-secondary)",
-                lineHeight: 1.8,
-                marginBottom: 28,
-                fontStyle: "italic",
+                padding: "48px 40px",
+                textAlign: "center",
                 position: "relative",
-                zIndex: 1,
+                overflow: "hidden",
               }}
             >
-              &ldquo;{current.testimonial}&rdquo;
-            </blockquote>
-
-            {/* Rating */}
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                gap: 4,
-                marginBottom: 24,
-              }}
-            >
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Star
-                  key={i}
-                  size={18}
-                  style={{
-                    color: i < current.rating ? "#fbbf24" : "var(--border-color)",
-                    fill: i < current.rating ? "#fbbf24" : "none",
-                  }}
-                />
-              ))}
-            </div>
-
-            {/* Client Info */}
-            <div>
-              {/* Avatar */}
+              {/* Quote icon */}
               <div
                 style={{
-                  width: 56,
-                  height: 56,
-                  borderRadius: "50%",
-                  background: "var(--gradient-1)",
-                  margin: "0 auto 12px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontWeight: 700,
-                  fontSize: "1.2rem",
-                  color: "white",
-                  border: "2px solid rgba(124, 58, 237, 0.3)",
+                  position: "absolute",
+                  top: 20,
+                  left: 28,
+                  color: "rgba(124, 58, 237, 0.15)",
                 }}
               >
-                {current.name[0]}
+                <Quote size={48} />
               </div>
-              <h4
+
+              {/* Testimonial Text */}
+              <blockquote
                 style={{
-                  fontSize: "1.05rem",
-                  fontWeight: 700,
-                  fontFamily: "var(--font-display)",
+                  fontSize: "1.15rem",
+                  color: "var(--text-secondary)",
+                  lineHeight: 1.8,
+                  marginBottom: 28,
+                  fontStyle: "italic",
+                  position: "relative",
+                  zIndex: 1,
                 }}
               >
-                {current.name}
-              </h4>
-              <p
+                &ldquo;{current.testimonial}&rdquo;
+              </blockquote>
+
+              {/* Rating */}
+              <div
                 style={{
-                  fontSize: "0.88rem",
-                  color: "var(--text-muted)",
-                  margin: "4px 0",
+                  display: "flex",
+                  justifyContent: "center",
+                  gap: 4,
+                  marginBottom: 24,
                 }}
               >
-                {current.role} at {current.company}
-              </p>
-              {current.projectName && (
-                <p
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <Star
+                    key={i}
+                    size={18}
+                    style={{
+                      color: i < current.rating ? "#fbbf24" : "var(--border-color)",
+                      fill: i < current.rating ? "#fbbf24" : "none",
+                    }}
+                  />
+                ))}
+              </div>
+
+              {/* Client Info */}
+              <div>
+                {/* Avatar */}
+                <div
                   style={{
-                    fontSize: "0.8rem",
-                    color: "var(--accent-light)",
-                    marginTop: 4,
+                    width: 56,
+                    height: 56,
+                    borderRadius: "50%",
+                    background: "var(--gradient-1)",
+                    margin: "0 auto 12px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontWeight: 700,
+                    fontSize: "1.2rem",
+                    color: "white",
+                    border: "2px solid rgba(124, 58, 237, 0.3)",
+                    overflow: "hidden",
                   }}
                 >
-                  Project: {current.projectName}
+                  {current.photo ? (
+                    <Image
+                      src={current.photo}
+                      alt={`${current.name} portrait`}
+                      width={56}
+                      height={56}
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    current.name?.[0] || "?"
+                  )}
+                </div>
+                <h4
+                  style={{
+                    fontSize: "1.05rem",
+                    fontWeight: 700,
+                    fontFamily: "var(--font-display)",
+                  }}
+                >
+                  {current.name}
+                </h4>
+                <p
+                  style={{
+                    fontSize: "0.88rem",
+                    color: "var(--text-muted)",
+                    margin: "4px 0",
+                  }}
+                >
+                  {current.role} at {current.company}
                 </p>
-              )}
+                {current.projectName && (
+                  <p
+                    style={{
+                      fontSize: "0.8rem",
+                      color: "var(--accent-light)",
+                      marginTop: 4,
+                    }}
+                  >
+                    Project: {current.projectName}
+                  </p>
+                )}
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="card-3d" style={{ padding: "48px 24px", textAlign: "center" }}>
+              <p style={{ color: "var(--text-secondary)", margin: 0 }}>
+                {loading ? "Loading testimonials..." : "Client testimonials will appear here."}
+              </p>
+            </div>
+          )}
 
           {/* Nav Buttons */}
           {testimonials.length > 1 && (
@@ -286,7 +304,7 @@ export default function Testimonials() {
           )}
 
           {/* Dots */}
-          <div
+          {current && <div
             style={{
               display: "flex",
               justifyContent: "center",
@@ -312,11 +330,11 @@ export default function Testimonials() {
                 }}
               />
             ))}
-          </div>
+          </div>}
         </div>
 
         {/* Stats */}
-        <div
+        {testimonials.length > 0 && <div
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(3, 1fr)",
@@ -353,7 +371,7 @@ export default function Testimonials() {
               </p>
             </div>
           ))}
-        </div>
+        </div>}
       </div>
 
       <style jsx>{`

@@ -11,23 +11,13 @@ export default function CreateblogForm() {
 
   const [form, setForm] = useState({
     name: "",
-    tagline: "",
     description: "",
-    status: "active",
-    duration: "",
-    role: "",
     category: "",
-    liveDemo: "",
-    github: "",
-    technologies: "",
   });
 
-  // main image (single) and screenshots (multiple)
+  // Optional cover image.
   const [mainImage, setMainImage] = useState(null);
   const [mainPreview, setMainPreview] = useState(null);
-
-  const [screenshots, setScreenshots] = useState([]);
-  const [screenshotPreviews, setScreenshotPreviews] = useState([]);
 
   const [loading, setLoading] = useState(false);
 
@@ -63,63 +53,17 @@ export default function CreateblogForm() {
   };
 
   // =========================
-  // SCREENSHOTS
-  // =========================
-  const handleScreenshots = (e) => {
-    const files = Array.from(e.target.files);
-
-    setScreenshots(files);
-
-    const readers = files.map((file) => {
-      return new Promise((res) => {
-        const r = new FileReader();
-
-        r.onload = () => res(r.result);
-
-        r.readAsDataURL(file);
-      });
-    });
-
-    Promise.all(readers).then((imgs) => {
-      setScreenshotPreviews(imgs);
-    });
-  };
-
-  // =========================
-  // REMOVE SCREENSHOT
-  // =========================
-  const removeScreenshot = (index) => {
-    setScreenshots((prev) =>
-      prev.filter((_, i) => i !== index)
-    );
-
-    setScreenshotPreviews((prev) =>
-      prev.filter((_, i) => i !== index)
-    );
-  };
-
-  // =========================
   // CLEAR FORM
   // =========================
   const clearForm = () => {
     setForm({
       name: "",
-      tagline: "",
       description: "",
-      status: "active",
-      duration: "",
-      role: "",
       category: "",
-      liveDemo: "",
-      github: "",
-      technologies: "",
     });
 
     setMainImage(null);
     setMainPreview(null);
-
-    setScreenshots([]);
-    setScreenshotPreviews([]);
   };
 
   // =========================
@@ -146,25 +90,13 @@ export default function CreateblogForm() {
       const fd = new FormData();
 
       fd.append("name", form.name);
-      fd.append("tagline", form.tagline);
       fd.append("description", form.description);
-      fd.append("status", form.status);
-      fd.append("duration", form.duration);
-      fd.append("role", form.role);
       fd.append("category", form.category);
-      fd.append("liveDemo", form.liveDemo);
-      fd.append("github", form.github);
-      fd.append("technologies", form.technologies);
 
       // Main image
       if (mainImage) {
         fd.append("image", mainImage);
       }
-
-      // Screenshots
-      screenshots.forEach((file) => {
-        fd.append("screenshots[]", file);
-      });
 
       const res = await fetch(`${BASE_URL}/api/blogs`, {
         method: "POST",
@@ -244,9 +176,7 @@ export default function CreateblogForm() {
             gap: 20,
           }}
         >
-          {/* =========================
-                BLOG NAME + TAGLINE
-            ========================== */}
+          {/* Blog title and category */}
           <div
             className="form-row"
             style={{
@@ -256,14 +186,12 @@ export default function CreateblogForm() {
             }}
           >
             <div>
-              <label style={labelStyle}>
-                Blog Name *
-              </label>
+              <label style={labelStyle}>Blog Title *</label>
 
               <input
                 type="text"
                 name="name"
-                placeholder="My Blog"
+                placeholder="Enter a clear blog title"
                 style={inputStyle}
                 value={form.name}
                 onChange={handleChange}
@@ -272,17 +200,15 @@ export default function CreateblogForm() {
             </div>
 
             <div>
-              <label style={labelStyle}>
-                Tagline
-              </label>
-
+              <label style={labelStyle}>Category *</label>
               <input
                 type="text"
-                name="tagline"
-                placeholder="A short description of your blog"
+                name="category"
+                placeholder="Technology, Development..."
                 style={inputStyle}
-                value={form.tagline}
+                value={form.category}
                 onChange={handleChange}
+                required
               />
             </div>
           </div>
@@ -298,7 +224,7 @@ export default function CreateblogForm() {
             <textarea
               name="description"
               rows={6}
-              placeholder="Describe the blog, goals, features, challenges and outcomes..."
+              placeholder="Write your blog content..."
               style={{
                 ...inputStyle,
                 resize: "vertical",
@@ -310,179 +236,10 @@ export default function CreateblogForm() {
             />
           </div>
 
-          {/* =========================
-                TECHNOLOGIES + CATEGORY + ROLE
-            ========================== */}
-          <div
-            className="form-selects"
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr 1fr",
-              gap: 16,
-            }}
-          >
-            <div>
-              <label style={labelStyle}>
-                Technologies
-              </label>
-
-              <input
-                type="text"
-                name="technologies"
-                placeholder="React, Node.js, Tailwind CSS"
-                style={inputStyle}
-                value={form.technologies}
-                onChange={handleChange}
-              />
-
-              <p
-                style={{
-                  fontSize: "0.75rem",
-                  color: "var(--text-muted)",
-                  marginTop: 6,
-                  marginBottom: 0,
-                }}
-              >
-                Comma separated
-              </p>
-            </div>
-
-            <div>
-              <label style={labelStyle}>
-                Category *
-              </label>
-
-              <input
-                type="text"
-                name="category"
-                placeholder="Technology / Development"
-                style={inputStyle}
-                value={form.category}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div>
-              <label style={labelStyle}>
-                Role
-              </label>
-
-              <input
-                type="text"
-                name="role"
-                placeholder="Developer / Writer"
-                style={inputStyle}
-                value={form.role}
-                onChange={handleChange}
-              />
-            </div>
-          </div>
-
-          {/* =========================
-                STATUS + DURATION
-            ========================== */}
-          <div
-            className="form-row"
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: 16,
-            }}
-          >
-            <div>
-              <label style={labelStyle}>
-                Status
-              </label>
-
-              <select
-                name="status"
-                value={form.status}
-                onChange={handleChange}
-                style={{
-                  ...inputStyle,
-                  cursor: "pointer",
-                  appearance: "none",
-                }}
-              >
-                <option value="active">
-                  Active
-                </option>
-
-                <option value="completed">
-                  Completed
-                </option>
-
-                <option value="inactive">
-                  Inactive
-                </option>
-              </select>
-            </div>
-
-            <div>
-              <label style={labelStyle}>
-                Duration
-              </label>
-
-              <input
-                type="text"
-                name="duration"
-                placeholder="Jan 2025 - Mar 2025"
-                style={inputStyle}
-                value={form.duration}
-                onChange={handleChange}
-              />
-            </div>
-          </div>
-
-          {/* =========================
-                LIVE DEMO + GITHUB
-            ========================== */}
-          <div
-            className="form-row"
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: 16,
-            }}
-          >
-            <div>
-              <label style={labelStyle}>
-                Live Demo URL
-              </label>
-
-              <input
-                type="url"
-                name="liveDemo"
-                placeholder="https://example.com"
-                style={inputStyle}
-                value={form.liveDemo}
-                onChange={handleChange}
-              />
-            </div>
-
-            <div>
-              <label style={labelStyle}>
-                GitHub URL
-              </label>
-
-              <input
-                type="url"
-                name="github"
-                placeholder="https://github.com/username/repo"
-                style={inputStyle}
-                value={form.github}
-                onChange={handleChange}
-              />
-            </div>
-          </div>
-
-          {/* =========================
-                MAIN IMAGE
-            ========================== */}
+          {/* Optional cover image */}
           <div>
             <label style={labelStyle}>
-              Main Image (Hero)
+              Cover Image (optional)
             </label>
 
             <div
@@ -542,98 +299,6 @@ export default function CreateblogForm() {
                   >
                     Remove
                   </button>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* =========================
-                SCREENSHOTS
-            ========================== */}
-          <div>
-            <label style={labelStyle}>
-              Screenshots (optional)
-            </label>
-
-            <div
-              style={{
-                padding: 16,
-                borderRadius: "var(--radius-md)",
-                border:
-                  "1px dashed rgba(124, 58, 237, 0.3)",
-                background:
-                  "rgba(124, 58, 237, 0.03)",
-              }}
-            >
-              <input
-                type="file"
-                accept="image/*"
-                multiple
-                onChange={handleScreenshots}
-                style={{
-                  width: "100%",
-                  color: "var(--text-secondary)",
-                }}
-              />
-
-              {screenshotPreviews.length > 0 && (
-                <div
-                  style={{
-                    marginTop: 16,
-                    display: "grid",
-                    gridTemplateColumns:
-                      "repeat(3, 1fr)",
-                    gap: 12,
-                  }}
-                >
-                  {screenshotPreviews.map(
-                    (src, idx) => (
-                      <div
-                        key={idx}
-                        style={{
-                          position: "relative",
-                          overflow: "hidden",
-                          borderRadius:
-                            "var(--radius-md)",
-                          border:
-                            "1px solid rgba(255,255,255,0.1)",
-                        }}
-                      >
-                        <img
-                          src={src}
-                          alt={`shot-${idx}`}
-                          style={{
-                            width: "100%",
-                            height: 120,
-                            objectFit: "cover",
-                            display: "block",
-                          }}
-                        />
-
-                        <button
-                          type="button"
-                          onClick={() =>
-                            removeScreenshot(idx)
-                          }
-                          style={{
-                            position: "absolute",
-                            top: 6,
-                            right: 6,
-                            width: 26,
-                            height: 26,
-                            borderRadius: "50%",
-                            border: "none",
-                            background:
-                              "rgba(0,0,0,0.7)",
-                            color: "#fff",
-                            cursor: "pointer",
-                          }}
-                        >
-                          ✕
-                        </button>
-                      </div>
-                    )
-                  )}
                 </div>
               )}
             </div>
