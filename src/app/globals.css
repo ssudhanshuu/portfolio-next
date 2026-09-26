@@ -325,10 +325,100 @@ h1, h2, h3, h4, h5, h6 {
   background: rgba(10, 10, 17, 0.9);
 }
 
+#about {
+  padding-top: 28px !important;
+}
+
 #about,
 #projects,
 #testimonials {
   background: linear-gradient(180deg, rgba(17, 17, 26, 0.92), rgba(9, 9, 16, 0.94));
+}
+
+.about-side-column {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.about-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.about-highlights h4 {
+  margin: 0 0 14px;
+  color: var(--accent-light);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.about-highlights ul {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.about-highlights li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.about-highlights li svg {
+  flex: 0 0 18px;
+  margin-top: 2px;
+  color: #4ade80;
+}
+.about-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0 0 28px;
+}
+
+.about-stat-card {
+  display: flex;
+  min-height: 72px;
+  align-items: center;
+  gap: 11px;
+  padding: 12px 14px;
+}
+
+.about-stat-icon {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 9px;
+}
+
+.about-stat-copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.about-stat-copy strong {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  line-height: 1.1;
+}
+
+.about-stat-copy span {
+  color: var(--text-muted);
+  font-size: 0.66rem;
+  line-height: 1.3;
 }
 
 #contact input,
@@ -661,6 +751,7 @@ h1, h2, h3, h4, h5, h6 {
     height: 66px;
     padding: 0 16px;
   }
+
 
   .site-brand-copy small {
     display: none;
@@ -1160,6 +1251,11 @@ h1, h2, h3, h4, h5, h6 {
 @media (max-width: 768px) {
   #testimonials {
     overflow: hidden;
+  }
+
+  #about .about-stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-top: 0;
   }
 
   .section-heading h2 {

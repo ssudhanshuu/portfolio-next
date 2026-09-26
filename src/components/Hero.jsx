@@ -1,13 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import { ArrowDown, ArrowUpRight, Mail } from "lucide-react";
-import { FaGithub, FaLinkedin } from "react-icons/fa";
+import { ArrowDown, ArrowUpRight, Download, Mail } from "lucide-react";
+import { FaFacebook, FaGithub, FaInstagram, FaLinkedin } from "react-icons/fa";
 import Tilt from "react-parallax-tilt";
 
-const technologies = ["React", "Node.js", "MongoDB", "TypeScript", "AWS"];
+const technologies = ["React.js", "Node.js", "Express.js", "MongoDB", "JavaScript", "Sql", "PostgreSql"];
 const highlights = [
-    { value: "5+", label: "Projects completed" },
+    { value: "1+", label: "Years Of Exprince" },
     { value: "MERN", label: "Full-stack toolkit" },
     { value: "Q4 '26", label: "Available to collaborate" },
 ];
@@ -36,8 +36,8 @@ export function Hero() {
                         </p>
 
                         <h1>
-                            I engineer products that
-                            <span> feel ahead of their time.</span>
+                            I build scalable web applications
+                            <span>that solve real-world problems.</span>
                         </h1>
 
                         <p className="hero-description">
@@ -62,6 +62,14 @@ export function Hero() {
                             >
                                 <Mail size={16} aria-hidden="true" />
                                 Get in touch
+                            </a>
+                            <a
+                                href="/resumepdf.pdf"
+                                download="Sudhanshu-Resume.pdf"
+                                className="hero-button hero-button-secondary"
+                            >
+                                <Download size={16} aria-hidden="true" />
+                                Download Resume
                             </a>
                         </div>
 
@@ -96,6 +104,22 @@ export function Hero() {
                                 aria-label="LinkedIn"
                             >
                                 <FaLinkedin size={17} />
+                            </a>
+                            <a
+                                href="https://www.instagram.com/mr.sudhanshusaini?stkn=eHIydnZmYTA0d281"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                aria-label="Instagram"
+                            >
+                                <FaInstagram size={17} />
+                            </a>
+                            <a
+                                href="https://www.facebook.com/saini.sudhanshu.3"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                aria-label="Facebook"
+                            >
+                                <FaFacebook size={17} />
                             </a>
                         </div>
                     </div>

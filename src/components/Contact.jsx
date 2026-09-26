@@ -93,12 +93,12 @@ export default function Contact() {
     "Other",
   ];
   const budgetRanges = [
-    "Under $1000",
-    "$1000 - $5000",
-    "$5000 - $10000",
-    "$10000 - $25000",
-    "$25000+",
-    "Not sure",
+    "₹Under 1000",
+    "₹1000 - 5000",
+    "₹5000 - 10000",
+    "₹0000 - 25000",
+    "₹25000+",
+    "₹Not sure",
   ];
   const timelines = [
     "ASAP",

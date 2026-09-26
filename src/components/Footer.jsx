@@ -1,7 +1,7 @@
 "use client";
 
 import { Mail, Phone, Heart, ArrowUp } from "lucide-react";
-import { FaGithub, FaLinkedin } from "react-icons/fa";
+import { FaFacebook, FaGithub, FaInstagram, FaLinkedin } from "react-icons/fa";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -16,6 +16,16 @@ export function Footer() {
       icon: FaLinkedin,
       href: "https://linkedin.com/in/johndoe",
       label: "LinkedIn",
+    },
+    {
+      icon: FaInstagram,
+      href: "https://www.instagram.com/mr.sudhanshusaini?stkn=eHIydnZmYTA0d281",
+      label: "Instagram",
+    },
+    {
+      icon: FaFacebook,
+      href: "https://www.facebook.com/saini.sudhanshu.3",
+      label: "Facebook",
     },
   ];
 

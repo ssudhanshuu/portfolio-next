@@ -6,8 +6,8 @@ import Tilt from "react-parallax-tilt";
 export function About() {
   const stats = [
     { icon: Code2, value: "5+", label: "Projects Completed", color: "#7c3aed" },
-    { icon: Users, value: "many", label: "Happy Clients", color: "#4ade80" },
-    { icon: Award, value: "Trusted", label: "Years Experience", color: "#f59e0b" },
+    { icon: Users, value: "Trusted", label: "Happy Clients", color: "#4ade80" },
+    { icon: Award, value: "1+", label: "Years Experience", color: "#f59e0b" },
     { icon: Coffee, value: "∞", label: "Cups of Coffee", color: "#ec4899" },
   ];
 
@@ -52,6 +52,35 @@ export function About() {
       }}
     >
       <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 1.5rem" }}>
+        <div className="about-stats-grid">
+          {stats.map((stat) => {
+            const Icon = stat.icon;
+            return (
+              <Tilt
+                key={stat.label}
+                tiltMaxAngleX={10}
+                tiltMaxAngleY={10}
+                glareEnable
+                glareMaxOpacity={0.08}
+                glareBorderRadius="12px"
+              >
+                <div className="card-3d about-stat-card">
+                  <div
+                    className="about-stat-icon"
+                    style={{ background: `${stat.color}15`, color: stat.color }}
+                  >
+                    <Icon size={18} />
+                  </div>
+                  <div className="about-stat-copy">
+                    <strong style={{ color: stat.color }}>{stat.value}</strong>
+                    <span>{stat.label}</span>
+                  </div>
+                </div>
+              </Tilt>
+            );
+          })}
+        </div>
+
         {/* Section Heading */}
         <div className="section-heading">
           <span className="section-label">About Me</span>
@@ -103,115 +132,21 @@ export function About() {
               </p>
             </div>
 
-            {/* Highlights */}
-            <div style={{ marginTop: 24 }}>
-              <h4
-                style={{
-                  fontSize: "1.1rem",
-                  fontWeight: 600,
-                  marginBottom: 16,
-                  color: "var(--accent-light)",
-                }}
-              >
-                What I Do:
-              </h4>
-              <ul
-                style={{
-                  listStyle: "none",
-                  padding: 0,
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 10,
-                }}
-              >
-                {highlights.map((item, idx) => (
-                  <li
-                    key={idx}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 12,
-                      color: "var(--text-secondary)",
-                      fontSize: "0.95rem",
-                    }}
-                  >
-                    <CheckCircle
-                      size={18}
-                      style={{ color: "#4ade80", flexShrink: 0 }}
-                    />
+          </div>
+
+          {/* Right - Highlights */}
+          <div className="about-side-column">
+            <div className="about-highlights">
+              <h4>What I Do:</h4>
+              <ul>
+                {highlights.map((item) => (
+                  <li key={item}>
+                    <CheckCircle size={18} aria-hidden="true" />
                     {item}
                   </li>
                 ))}
               </ul>
             </div>
-          </div>
-
-          {/* Right - Stats */}
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: 16,
-            }}
-          >
-            {stats.map((stat, idx) => {
-              const Icon = stat.icon;
-              return (
-                <Tilt
-                  key={stat.label}
-                  tiltMaxAngleX={10}
-                  tiltMaxAngleY={10}
-                  glareEnable={true}
-                  glareMaxOpacity={0.08}
-                  glareBorderRadius="16px"
-                >
-                  <div
-                    className="card-3d"
-                    style={{
-                      padding: 24,
-                      textAlign: "center",
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      gap: 8,
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: 48,
-                        height: 48,
-                        borderRadius: "var(--radius-md)",
-                        background: `${stat.color}15`,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        marginBottom: 8,
-                      }}
-                    >
-                      <Icon size={22} style={{ color: stat.color }} />
-                    </div>
-                    <div
-                      style={{
-                        fontSize: "2rem",
-                        fontWeight: 800,
-                        fontFamily: "var(--font-display)",
-                        color: stat.color,
-                      }}
-                    >
-                      {stat.value}
-                    </div>
-                    <div
-                      style={{
-                        fontSize: "0.85rem",
-                        color: "var(--text-muted)",
-                      }}
-                    >
-                      {stat.label}
-                    </div>
-                  </div>
-                </Tilt>
-              );
-            })}
           </div>
         </div>
 
